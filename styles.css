@@ -1,0 +1,20 @@
+/* styles.css */
+#preview {
+    margin-top: 20px;
+    white-space: pre-wrap; /* Mantém a formatação do texto */
+    border: 1px solid #ccc;
+    padding: 10px;
+    max-width: 600px;
+    max-height: 400px;
+    overflow: auto; /* Adiciona rolagem se o texto for muito longo */
+}
+
+#resultDisplay {
+    margin-top: 20px;
+    white-space: pre-wrap; /* Mantém a formatação do texto */
+    border: 1px solid #ccc;
+    padding: 10px;
+    max-width: 600px;
+    max-height: 400px;
+    overflow: auto; /* Adiciona rolagem se o texto for muito longo */
+}

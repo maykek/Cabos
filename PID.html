@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle PID</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        canvas { max-width: 1000px; margin: 200px auto; }
+    </style>
+</head>
+<body>
+    <h1>Controle PID: Teoria e Prática</h1>
+    <p>Insira os parâmetros do controlador PID:</p>
+    <label for="Kp">Kp:</label>
+    <input type="number" id="Kp" value="5" step="0.1"><br>
+    <label for="Ki">Ki:</label>
+    <input type="number" id="Ki" value="1" step="0.1"><br>
+    <label for="Kd">Kd:</label>
+    <input type="number" id="Kd" value="0.5" step="0.1"><br>
+    <button onclick="runSimulation()">Iniciar Simulação</button>
+
+    <canvas id="pidChart"></canvas>
+
+    <script>
+        function runSimulation() {
+            const Kp = parseFloat(document.getElementById('Kp').value);
+            const Ki = parseFloat(document.getElementById('Ki').value);
+            const Kd = parseFloat(document.getElementById('Kd').value);
+
+            const time = [];
+            const output = [];
+            const setpoint = 1; // Valor desejado
+            let errorSum = 0;
+            let lastError = 0;
+            let lastOutput = 0;
+
+            for (let t = 0; t <= 50; t++) {
+                const currentOutput = output[output.length - 1] || 0;
+                const error = setpoint - currentOutput;
+                errorSum += error;
+                const dError = error - lastError;
+
+                // Controlador PID
+                const control = Kp * error + Ki * errorSum + Kd * dError;
+
+                // Atualiza a saída com um fator de tempo
+                const newOutput = currentOutput + control * 0.1; // Multiplicador para suavizar a saída
+
+                // Limita a saída para evitar valores extremos
+                if (newOutput > 5) newOutput = 5;
+                if (newOutput < 0) newOutput = 0;
+
+                time.push(t);
+                output.push(newOutput);
+
+                lastError = error;
+                lastOutput = newOutput;
+            }
+
+            // Plotando o gráfico
+            const ctx = document.getElementById('pidChart').getContext('2d');
+            const pidChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: time,
+                    datasets: [{
+                        label: 'Saída do Controlador PID',
+                        data: output,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 0.5,
+                        fill: true
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Tempo'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Saída'
+                            },
+                            min: 0,
+                            max: 5 // Limite superior para visualização
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
