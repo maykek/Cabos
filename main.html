@@ -3,14 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload de Dados de Medição</title>
+    <title>Upload de Arquivos de Teste de Cabos</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Upload de Dados de Medição</h1>
-    <input type="file" id="fileInput" accept=".txt">
+    <h1>Upload de Arquivos de Teste de Cabos</h1>
+    
+    <label for="cableGroups">Selecione o número de grupos de cabos:</label>
+    <select id="cableGroups">
+        <option value="0">Selecione</option>
+        <option value="1">1 grupo (3 cabos)</option>
+        <option value="2">2 grupos (6 cabos)</option>
+        <option value="3">3 grupos (9 cabos)</option>
+        <option value="4">4 grupos (12 cabos)</option>
+    </select>
+
+    <div id="uploadSection"></div>
     <div id="preview"></div>
     <div id="resultDisplay"></div>
+
     <script src="script.js"></script>
 </body>
 </html>

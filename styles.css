@@ -1,20 +1,38 @@
-/* styles.css */
-#preview {
+.group {
     margin-top: 20px;
-    white-space: pre-wrap; /* Mantém a formatação do texto */
     border: 1px solid #ccc;
     padding: 10px;
-    max-width: 600px;
-    max-height: 400px;
-    overflow: auto; /* Adiciona rolagem se o texto for muito longo */
 }
 
-#resultDisplay {
+input[type="file"] {
+    display: block;
+    margin-top: 5px;
+}
+#resultDisplay{
     margin-top: 20px;
-    white-space: pre-wrap; /* Mantém a formatação do texto */
+    white-space: pre-wrap; 
     border: 1px solid #ccc;
     padding: 10px;
-    max-width: 600px;
+    max-width: 1000px;
     max-height: 400px;
-    overflow: auto; /* Adiciona rolagem se o texto for muito longo */
+    overflow: auto;
+}
+
+table {
+    margin-top: 20px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
