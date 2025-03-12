@@ -1,5 +1,6 @@
 const cableGroupsSelect = document.getElementById('cableGroups');
 const uploadSection = document.getElementById('uploadSection');
+let allFilesData = []; // Para armazenar dados de todos os arquivos
 
 cableGroupsSelect.addEventListener('change', function() {
     const numberOfGroups = parseInt(this.value);
@@ -79,44 +80,62 @@ cableGroupsSelect.addEventListener('change', function() {
 
 // Função para lidar com o upload de arquivos
 function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
+    const files = event.target.files; // Pega todos os arquivos selecionados
+    const groupId = event.target.id.split('-')[1]; // Ex: "cable-1-cable-1" → groupId = "1"
+    const cableId = event.target.id.split('-')[3]; // Ex: "cable-1-cable-1" → cableId = "1"
+
+    // Processa cada arquivo do input
+    Array.from(files).forEach((file, index) => {
         const reader = new FileReader();
         reader.onload = function(e) {
             const fileContent = e.target.result;
-            const measurements = extractMeasurements(fileContent); // Extrai os dados das medições
-            displayResults(measurements, file.name); // Passa o nome do arquivo para a função
-        }
-        reader.readAsText(file); // Lê o arquivo como texto
-    }
-}
+            const fileName = file.name;
+            const measurements = extractMeasurements(fileContent, fileName, groupId, cableId);
+            
+            // Adiciona ao array global
+            allFilesData.push({
+                fileName,
+                groupId: parseInt(groupId),
+                cableId: parseInt(cableId),
+                measurements
+            });
 
+            displayResults(measurements); // Exibe os resultados
+        };
+        reader.readAsText(file);
+    });
+    //console.log(allFilesData);
+}
 // Função para extrair os dados das medições
-function extractMeasurements(content) {
+function extractMeasurements(content, fileName, groupId, cableId) {
     const lines = content.split('\n');
     const measurements = [];
     let currentStep = '';
 
     lines.forEach(line => {
-        line = line.trim(); // Remove espaços em branco
-        if (line === '') return; // Ignora linhas vazias
+        line = line.trim();
+        if (line === '') return;
 
-        // Verifica se a linha é um nome de Step
-        if (line.endsWith('Sum]')) {
-            currentStep = line; // Atualiza o Step atual
+        if (line.startsWith('[Measurement Diagnose')) {
+            currentStep = line;
         } else if (line.startsWith('TanDeltaSTD=')) {
             const tanDeltaSTD = parseFloat(line.split('=')[1].trim());
-            measurements.push({ step: currentStep, TanDeltaSTD: tanDeltaSTD });
+            measurements.push({ 
+                step: currentStep,
+                TanDeltaSTD: tanDeltaSTD,
+                groupId: parseInt(groupId),
+                cableId: parseInt(cableId),
+                fileName 
+            });
         } else if (line.startsWith('TanDeltaMean=')) {
             const tanDeltaMean = parseFloat(line.split('=')[1].trim());
-            measurements[measurements.length - 1].TanDeltaMean = tanDeltaMean; // Adiciona ao último item
-        } else if (line.startsWith('DeltaTanDelta=')) {
-            const deltaTanDelta = parseFloat(line.split('=')[1].trim());
-            measurements[measurements.length - 1].DeltaTanDelta = deltaTanDelta; // Adiciona ao último item
+            if (measurements.length > 0) {
+                measurements[measurements.length - 1].TanDeltaMean = tanDeltaMean;
+            }
         }
     });
 
-    return measurements; // Retorna as medições extraídas
+    return measurements;
 }
 
 // Função para exibir os resultados
@@ -131,7 +150,7 @@ function displayResults(measurements) {
     // Cria o cabeçalho da tabela
     const header = table.createTHead();
     const headerRow = header.insertRow(0);
-    const headers = ['Step', 'TanDeltaSTD', 'TanDeltaMean', 'DeltaTanDelta'];
+    const headers = ['Step', 'TanDeltaSTD', 'TanDeltaMean'];
 
     headers.forEach((headerText) => {
         const th = document.createElement('th');
@@ -145,11 +164,18 @@ function displayResults(measurements) {
     measurements.forEach(measurement => {
         const row = tbody.insertRow();
         row.insertCell(0).textContent = measurement.step;
-        row.insertCell(1).textContent = measurement.TanDeltaSTD.toFixed(4); // Formata para 4 casas decimais
-        row.insertCell(2).textContent = measurement.TanDeltaMean ? measurement.TanDeltaMean.toFixed(4) : 'N/A'; // Verifica se existe
-        row.insertCell(3).textContent = measurement.DeltaTanDelta ? measurement.DeltaTanDelta.toFixed(4) : 'N/A'; // Verifica se existe
+        row.insertCell(1).textContent = measurement.TanDeltaSTD.toFixed(3); // Formata para 3 casas decimais
+        row.insertCell(2).textContent = measurement.TanDeltaMean ? measurement.TanDeltaMean.toFixed(3) : 'N/A'; // Verifica se existe
+        //row.insertCell(3).textContent = measurement.DeltaTanDelta ? measurement.DeltaTanDelta.toFixed(3) : 'N/A'; // Verifica se existe
     });
 
     // Adiciona a tabela ao display de resultados
     resultDisplay.appendChild(table);
+   // console.log('Dados extraídos:', measurements);
+   
 }
+
+
+console.log(allFilesData);
+
+//console.log(allFilesData); // Exibe todos os dados armazenados

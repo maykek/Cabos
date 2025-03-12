@@ -14,7 +14,7 @@ input[type="file"] {
     border: 1px solid #ccc;
     padding: 10px;
     max-width: 1000px;
-    max-height: 400px;
+    max-height: 4000px;
     overflow: auto;
 }
 
