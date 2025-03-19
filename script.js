@@ -1,56 +1,10 @@
 const cableGroupsSelect = document.getElementById('cableGroups');
 const uploadSection = document.getElementById('uploadSection');
+const dataName = [];
+let fileMeasurements = {}; // Objeto para armazenar medições de cada arquivo
 let allFilesData = []; // Para armazenar dados de todos os arquivos
-
-cableGroupsSelect.addEventListener('change', function() {
-    const numberOfGroups = parseInt(this.value);
-    uploadSection.innerHTML = ''; // Limpa a seção de upload anterior
-
-    for (let i = 0; i < numberOfGroups; i++) {
-        const groupDiv = document.createElement('div');
-        groupDiv.classList.add('group');
-
-        const label = document.createElement('label');
-        label.textContent = `Grupo ${i + 1} (3 cabos):`;
-        groupDiv.appendChild(label);
-
-        for (let j = 0; j < 3; j++) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = "."; // Tipos de arquivos permitidos
-            input.id = `cable-${i + 1}-cable-${j + 1}`;
-            groupDiv.appendChild(input);
-        }
-
-        uploadSection.appendChild(groupDiv);
-    }
-});
-
-
-cableGroupsSelect.addEventListener('change', function() {
-    const numberOfGroups = parseInt(this.value);
-    uploadSection.innerHTML = ''; // Limpa a seção de upload anterior
-
-    for (let i = 0; i < numberOfGroups; i++) {
-        const groupDiv = document.createElement('div');
-        groupDiv.classList.add('group');
-
-        const label = document.createElement('label');
-        label.textContent = `Grupo ${i + 1} (3 cabos):`;
-        groupDiv.appendChild(label);
-
-        for (let j = 0; j < 3; j++) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.'; // Tipos de arquivos permitidos
-            input.id = `cable-${i + 1}-cable-${j + 1}`;
-            input.addEventListener('change', handleFileUpload);
-            groupDiv.appendChild(input);
-        }
-
-        uploadSection.appendChild(groupDiv);
-    }
-});
+let tanDeltaMeanValues = []; // Para armazenar os valores de TanDeltaMean
+const measurements = [];
 
 // Função para lidar com o upload de arquivos
 cableGroupsSelect.addEventListener('change', function() {
@@ -85,7 +39,7 @@ function handleFileUpload(event) {
     const cableId = event.target.id.split('-')[3]; // Ex: "cable-1-cable-1" → cableId = "1"
 
     // Processa cada arquivo do input
-    Array.from(files).forEach((file, index) => {
+    Array.from(files).forEach((file) => {
         const reader = new FileReader();
         reader.onload = function(e) {
             const fileContent = e.target.result;
@@ -95,22 +49,19 @@ function handleFileUpload(event) {
             // Adiciona ao array global
             allFilesData.push({
                 fileName,
-                groupId: parseInt(groupId),
-                cableId: parseInt(cableId),
                 measurements
             });
-
             displayResults(measurements); // Exibe os resultados
         };
         reader.readAsText(file);
     });
-    //console.log(allFilesData);
 }
+
 // Função para extrair os dados das medições
-function extractMeasurements(content, fileName, groupId, cableId) {
+function extractMeasurements(content, groupId, cableId) {
     const lines = content.split('\n');
-    const measurements = [];
     let currentStep = '';
+    let tanDeltaMax = -Infinity; // Inicializa aqui para cada arquivo
 
     lines.forEach(line => {
         line = line.trim();
@@ -120,20 +71,29 @@ function extractMeasurements(content, fileName, groupId, cableId) {
             currentStep = line;
         } else if (line.startsWith('TanDeltaSTD=')) {
             const tanDeltaSTD = parseFloat(line.split('=')[1].trim());
-            measurements.push({ 
-                step: currentStep,
-                TanDeltaSTD: tanDeltaSTD,
-                groupId: parseInt(groupId),
-                cableId: parseInt(cableId),
-                fileName 
-            });
+            // Atualiza tanDeltaMax se o novo valor for maior
+            if (tanDeltaSTD > tanDeltaMax) {
+                tanDeltaMax = tanDeltaSTD;
+            }
         } else if (line.startsWith('TanDeltaMean=')) {
             const tanDeltaMean = parseFloat(line.split('=')[1].trim());
             if (measurements.length > 0) {
                 measurements[measurements.length - 1].TanDeltaMean = tanDeltaMean;
+                tanDeltaMeanValues.push(tanDeltaMean);
             }
         }
     });
+
+    // Adiciona a medição final com o maior TanDeltaSTD encontrado
+    if (currentStep) {
+        measurements.push({ 
+            step: currentStep,
+            groupId: parseInt(groupId),
+            cableId: parseInt(cableId),
+            TanDeltaSTD: tanDeltaMax,
+            TanDeltaMean: tanDeltaMeanValues
+        });
+    }
 
     return measurements;
 }
@@ -175,7 +135,5 @@ function displayResults(measurements) {
    
 }
 
-
+console.log("tanDeltaM:",tanDeltaMeanValues)
 console.log(allFilesData);
-
-//console.log(allFilesData); // Exibe todos os dados armazenados
