@@ -46,6 +46,8 @@ const cableGroupsSelect = document.getElementById('cableGroups');
             const lines = fileContent.split('\n');
             let maxTanDeltaSTD = -Infinity; // Inicializa com o menor valor possível
             let tanDeltaMeans = []; // Array para armazenar os valores de TanDeltaMean
+            let tipup = 0;
+            let tipuptipup = 0;
 
             lines.forEach(line => {
                 line = line.trim(); // Remove espaços em branco
@@ -61,15 +63,20 @@ const cableGroupsSelect = document.getElementById('cableGroups');
                     const tanDeltaMean = parseFloat(line.split('=')[1].trim());
                     tanDeltaMeans.push(tanDeltaMean); // Adiciona o TanDeltaMean ao array
                 }
+                tipup = tanDeltaMeans[2] - tanDeltaMeans[0];
+                tipuptipup = (tanDeltaMeans[1] - tanDeltaMeans[0]) - (tanDeltaMeans[2] - tanDeltaMeans[1]); 
+                
             });
 
             // Exibe o maior TanDeltaSTD e os valores de TanDeltaMean encontrados
-            displayMaxTanDeltaSTD(fileName, maxTanDeltaSTD, tanDeltaMeans);
+            displayMaxTanDeltaSTD(fileName, maxTanDeltaSTD, tanDeltaMeans, tipup, tipuptipup);
         }
 
         // Função para exibir o maior TanDeltaSTD e os valores de TanDeltaMean
-        function displayMaxTanDeltaSTD(fileName, maxTanDeltaSTD, tanDeltaMeans) {
+        function displayMaxTanDeltaSTD(fileName, maxTanDeltaSTD, tanDeltaMeans, tipup, tipuptipup) {
             const resultDiv = document.createElement('div');
-            resultDiv.textContent = `Maior TanDeltaSTD do arquivo ${fileName}: ${maxTanDeltaSTD.toFixed(4)}, TanDeltaMeans correspondentes: ${tanDeltaMeans.length > 0 ? tanDeltaMeans.map(mean => mean.toFixed(4)).join(',     ') : 'N/A'}`; // Formata para 4 casas decimais
+            resultDiv.textContent = `Maior TanDeltaSTD do arquivo ${fileName}: ${maxTanDeltaSTD.toFixed(4)}, TanDeltaMeans correspondentes: ${tanDeltaMeans.length > 0 ? tanDeltaMeans.map(mean => mean.toFixed(4)).join(',     ')  : 'N/A'},    Tip-Up: ${tipup.toFixed(4)},    Tip-Up Tip-Up: ${tipuptipup.toFixed(4)}`; // Formata para 4 casas decimais
             resultDisplay.appendChild(resultDiv);
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////

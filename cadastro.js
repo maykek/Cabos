@@ -20,7 +20,10 @@
                     resultado = {
                         codigo: partes[4].trim(), // Código
                         descricao: partes[5] ? partes[5].trim() : '', // Descrição
-                        sala: partes[7] ? partes[7].trim() : '' // Sala
+                        sala: partes[7] ? partes[7].trim() : '', // Sala
+                        destino: partes[8] ? partes[8].trim(): '',
+                        CAE: partes[18] ? partes [18].trim():'',
+                        equipamento: partes[19] ? partes [19].trim(): '',
                     };
                     break; // Para a busca se o código for encontrado
                 }
@@ -28,9 +31,12 @@
 
             // Exibe o resultado
             if (resultado) {
-                console.log("Código encontrado:", resultado.codigo);
-                console.log("Descrição:", resultado.descricao);
-                console.log("Sala:", resultado.sala);
+                console.log("Código encontrado: ", resultado.codigo);
+                console.log("Descrição: ", resultado.descricao);
+                console.log("Sala: ", resultado.sala);
+                console.log("destino: ", resultado.destino);
+                console.log("CAE: ", resultado.CAE);
+                console.log("Equipamento: ", resultado.equipamento);
             } else {
                 console.log("Código não encontrado.");
             }
