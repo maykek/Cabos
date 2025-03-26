@@ -1,9 +1,9 @@
 const cableGroupsSelect = document.getElementById('cableGroups');
 const uploadSection = document.getElementById('uploadSection');
 const chartsContainer = document.getElementById('chartsContainer');
+const tipoCaboSelect = document.getElementById('tipoCabo');
 const inputsPerGroup = 3; // Define quantos inputs de upload por grupo
-let tipoCaboSelect = document.getElementById('tipoCabo');
-let tipoCabo = tipoCaboSelect.value;
+let tipoCabo = 0;
 const maxEPRTD = 75;
 const minEPRTD = 16;
 const maxEPRDP = 0.8;
@@ -27,6 +27,9 @@ let group = 0;
 let fase = '';
 let irTag = '';
 
+tipoCaboSelect.addEventListener('change', function(){
+    tipoCabo = parseInt(this.value)
+})
 
 cableGroupsSelect.addEventListener('change', function() {
     const numberOfGroups = parseInt(this.value); // Aqui é onde numberOfGroups é declarado
@@ -197,9 +200,4 @@ function updateChart(groupIndex, tanDeltaMeans) {
 
     // Atualiza o gráfico
     tanDeltaCharts[groupIndex].update();
-}
-
-function select(){
-    tipoCaboSelect = document.getElementById('tipoCabo');
-    tipoCabo = tipoCaboSelect.value;
 }
