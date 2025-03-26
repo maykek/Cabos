@@ -2,11 +2,32 @@ const cableGroupsSelect = document.getElementById('cableGroups');
 const uploadSection = document.getElementById('uploadSection');
 const chartsContainer = document.getElementById('chartsContainer');
 const inputsPerGroup = 3; // Define quantos inputs de upload por grupo
+let tipoCaboSelect = document.getElementById('tipoCabo');
+let tipoCabo = tipoCaboSelect.value;
+const maxEPRTD = 75;
+const minEPRTD = 16;
+const maxEPRDP = 0.8;
+const minEPRDP = 0.1;
+const maxEPRTU = 40;
+const minEPRTU = 2;
+const maxEPRTUTU = 25;
+const minEPRTUTU = 1;
+const maxXLPETD = 70;
+const minXLPETD = 6;
+const maxXLPEDP = 1;
+const minXLPEDP = 0.1;
+const maxXLPETU = 94;
+const minXLPETU = 6.7;
+const maxXLPETUTU = 50;
+const minXLPETUTU = 2;
+
 let tanDeltaMeansByGroup = []; // Array para armazenar os valores de TanDeltaMean por grupo
 let tanDeltaCharts = []; // Array para armazenar as instâncias dos gráficos
 let group = 0;
 let fase = '';
 let irTag = '';
+
+
 cableGroupsSelect.addEventListener('change', function() {
     const numberOfGroups = parseInt(this.value); // Aqui é onde numberOfGroups é declarado
     uploadSection.innerHTML = ''; // Limpa a seção de upload anterior
@@ -94,21 +115,73 @@ function updateChart(groupIndex, tanDeltaMeans) {
 
     // Se o gráfico não existir, cria um novo
     if (!tanDeltaCharts[groupIndex]) {
-        tanDeltaCharts[groupIndex] = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: Array.from({ length: inputsPerGroup }, (_, i) => `Passo ${(i * 0.5).toFixed(1)}`), // Labels para os passos
-                datasets: []
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
+        if(tipoCabo == 1)
+        {
+            tanDeltaCharts[groupIndex] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: inputsPerGroup }, (_, i) => `Passo ${(i * 0.5).toFixed(1)}`), // Labels para os passos
+                    datasets: [
+                        {
+                            label: 'Crítico',
+                            data: maxEPRTD,
+                            borderColor: 'rgb(238, 40, 5)',
+                            borderDash: [5, 5], // Linhas tracejadas
+                            fill: false
+                        },
+                        {
+                            label: 'Alerta',
+                            data: minEPRTD,
+                            borderColor: 'rgb(222, 246, 5)',
+                            borderDash: [5, 5], // Linhas tracejadas
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
+            });
+        }
+
+        if(tipoCabo == 2)
+            {
+                tanDeltaCharts[groupIndex] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({ length: inputsPerGroup }, (_, i) => `Passo ${(i * 0.5).toFixed(1)}`), // Labels para os passos
+                        datasets: [
+                            {
+                                label: 'Crítico',
+                                data: maxXLPETD,
+                                borderColor: 'rgb(238, 40, 5)',
+                                borderDash: [5, 5], // Linhas tracejadas
+                                fill: false
+                            },
+                            {
+                                label: 'Alerta',
+                                data: minXLPETD,
+                                borderColor: 'rgb(222, 246, 5)',
+                                borderDash: [5, 5], // Linhas tracejadas
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
             }
-        });
     }
     if(group == 1){fase = 'Fase R'}
     if(group == 2){fase = 'Fase S'}
@@ -124,4 +197,9 @@ function updateChart(groupIndex, tanDeltaMeans) {
 
     // Atualiza o gráfico
     tanDeltaCharts[groupIndex].update();
+}
+
+function select(){
+    tipoCaboSelect = document.getElementById('tipoCabo');
+    tipoCabo = tipoCaboSelect.value;
 }

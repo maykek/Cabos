@@ -8,6 +8,7 @@ input[type="file"] {
     display: block;
     margin-top: 5px;
 }
+
 #resultDisplay{
     margin-top: 20px;
     white-space: pre-wrap; 
