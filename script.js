@@ -5,8 +5,8 @@ const inputsPerGroup = 3; // Define quantos inputs de upload por grupo
 let tanDeltaMeansByGroup = []; // Array para armazenar os valores de TanDeltaMean por grupo
 let tanDeltaCharts = []; // Array para armazenar as instâncias dos gráficos
 let group = 0;
-let fase = ''
-let irTag = 
+let fase = '';
+let irTag = '';
 cableGroupsSelect.addEventListener('change', function() {
     const numberOfGroups = parseInt(this.value); // Aqui é onde numberOfGroups é declarado
     uploadSection.innerHTML = ''; // Limpa a seção de upload anterior
