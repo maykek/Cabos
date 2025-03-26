@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
+ <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload de Arquivos de Teste de Cabos</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Gráfico de TanDeltaMean</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        canvas { width: 800px; height: 400; margin: 5px auto; }
+        input[type="file"] { display: block; margin-top: 5px; }
+        input[type="text"] { display: block; margin-top: 5px; }
+    </style>
 </head>
 <body>
     <h1>Upload de Arquivos de Teste de Cabos</h1>
-    <div>
-        <input type="text" id="codigoInput" placeholder="Item Funcional">
-        <button id="buscarButton">Buscar</button>
-
-    </div>
+    
     <label for="cableGroups">Selecione o número de grupos de cabos:</label>
     <select id="cableGroups">
         <option value="0">Selecione</option>
@@ -25,11 +27,9 @@
     </select>
 
     <div id="uploadSection"></div>
-    <div id="preview"></div>
+    <div id="chartsContainer"></div>
     <div id="resultDisplay"></div>
 
-
     <script src="script.js"></script>
-    <script src="cadastro.js"></script>
 </body>
 </html>

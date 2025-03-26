@@ -1,75 +1,127 @@
 const cableGroupsSelect = document.getElementById('cableGroups');
-        const uploadSection = document.getElementById('uploadSection');
-        const resultDisplay = document.getElementById('resultDisplay');
+const uploadSection = document.getElementById('uploadSection');
+const chartsContainer = document.getElementById('chartsContainer');
+const inputsPerGroup = 3; // Define quantos inputs de upload por grupo
+let tanDeltaMeansByGroup = []; // Array para armazenar os valores de TanDeltaMean por grupo
+let tanDeltaCharts = []; // Array para armazenar as instâncias dos gráficos
+let group = 0;
+let fase = ''
+let irTag = 
+cableGroupsSelect.addEventListener('change', function() {
+    const numberOfGroups = parseInt(this.value); // Aqui é onde numberOfGroups é declarado
+    uploadSection.innerHTML = ''; // Limpa a seção de upload anterior
+    chartsContainer.innerHTML = ''; // Limpa os gráficos anteriores
+    tanDeltaMeansByGroup = []; // Reseta os dados do grupo
+    tanDeltaCharts = []; // Reseta os gráficos
 
-        cableGroupsSelect.addEventListener('change', function() {
-            const numberOfGroups = parseInt(this.value);
-            uploadSection.innerHTML = ''; // Limpa a seção de upload anterior
+    for (let i = 0; i < numberOfGroups; i++) {
+        const groupDiv = document.createElement('div');
+        groupDiv.classList.add('group');
+        const label = document.createElement('label');
+        label.textContent = `Grupo ${i + 1} (${inputsPerGroup} cabos):`;
+        groupDiv.appendChild(label);
+        tanDeltaMeansByGroup[i] = []; // Inicializa o array para o grupo
+        
+        for (let j = 0; j < inputsPerGroup; j++) {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.'; // Tipos de arquivos permitidos
+            fileInput.id = `group-${i + 1}-cable-${j + 1}`;
+            fileInput.addEventListener('change', handleFileUpload.bind(null, i)); // Passa o índice do grupo corretamente
+            groupDiv.appendChild(fileInput);
 
-            for (let i = 0; i < numberOfGroups; i++) {
-                const groupDiv = document.createElement('div');
-                groupDiv.classList.add('group');
+            // Adiciona um input de texto para o grupo
+            const textInput = document.createElement('input');
+            textInput.type = 'text';
+            textInput.placeholder = `Nome do Grupo ${i + 1}`;
+            groupDiv.appendChild(textInput);
+            textInput.id = `group-${i + 1}-cable-${j + 1}-${fase}`;
+            irTag = textInput.id;
+            
+        }
 
-                const label = document.createElement('label');
-                label.textContent = `Grupo ${i + 1} (3 cabos):`;
-                groupDiv.appendChild(label);
+        uploadSection.appendChild(groupDiv);
 
-                for (let j = 0; j < 3; j++) {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = '.'; // Tipos de arquivos permitidos
-                    input.id = `cable-${i + 1}-cable-${j + 1}`;
-                    input.addEventListener('change', handleFileUpload); // Adiciona o listener para cada input
-                    groupDiv.appendChild(input);
+        // Cria um canvas para o gráfico do grupo
+        const canvas = document.createElement('canvas');
+        canvas.id = `tanDeltaChart-${i}`; // ID único para cada gráfico
+        chartsContainer.appendChild(canvas);
+    }
+});
+
+// Função para lidar com o upload de arquivos
+function handleFileUpload(groupIndex, event) {
+    const files = event.target.files; // Obtém todos os arquivos selecionados
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fileContent = e.target.result;
+            processFile(fileContent, file.name, groupIndex); // Passa o groupIndex corretamente
+        }
+        reader.readAsText(file); // Lê o arquivo como texto
+        group++;
+        if(group > 3){group = 1}
+    }
+}
+
+// Função para processar cada arquivo
+function processFile(fileContent, fileName, groupIndex) {
+    const lines = fileContent.split('\n');
+    let tanDeltaMeans = []; // Array para armazenar os valores de TanDeltaMean
+
+    lines.forEach(line => {
+        line = line.trim(); // Remove espaços em branco
+        if (line === '') return; // Ignora linhas vazias
+
+        // Extração de dados
+        if (line.startsWith('TanDeltaMean=')) {
+            const tanDeltaMean = parseFloat(line.split('=')[1].trim());
+            tanDeltaMeans.push(tanDeltaMean); // Adiciona o TanDeltaMean ao array
+        }
+    });
+
+    // Armazena os valores de TanDeltaMean para o grupo
+    tanDeltaMeansByGroup[groupIndex].push(...tanDeltaMeans);
+
+    // Atualiza o gráfico após cada upload
+    updateChart(groupIndex, tanDeltaMeans);
+}
+
+// Função para atualizar o gráfico
+function updateChart(groupIndex, tanDeltaMeans) {
+    const ctx = document.getElementById(`tanDeltaChart-${groupIndex}`).getContext('2d');
+
+    // Se o gráfico não existir, cria um novo
+    if (!tanDeltaCharts[groupIndex]) {
+        tanDeltaCharts[groupIndex] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: inputsPerGroup }, (_, i) => `Passo ${(i * 0.5).toFixed(1)}`), // Labels para os passos
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
-
-                uploadSection.appendChild(groupDiv);
             }
         });
+    }
+    if(group == 1){fase = 'Fase R'}
+    if(group == 2){fase = 'Fase S'}
+    if(group == 3){fase = 'Fase T'}
+    // Adiciona um novo dataset para o grupo
+    tanDeltaCharts[groupIndex].data.datasets.push({
+        label: `${fase}`,
+        data: tanDeltaMeans,
+        borderColor: `hsl(${group * 245}, 100%, 50%)`, // Cores diferentes para cada grupo
+        fill: false,
+        tension: 0.1
+    });
 
-        // Função para lidar com o upload de arquivos
-        function handleFileUpload(event) {
-            const files = event.target.files; // Obtém todos os arquivos selecionados
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const fileContent = e.target.result;
-                    processFile(fileContent, file.name); // Processa o conteúdo do arquivo
-                }
-                reader.readAsText(file); // Lê o arquivo como texto
-            }
-        }
-
-        // Função para processar cada arquivo
-        function processFile(fileContent, fileName) {
-            const lines = fileContent.split('\n');
-            let maxTanDeltaSTD = -Infinity; // Inicializa com o menor valor possível
-            let tanDeltaMeans = []; // Array para armazenar os valores de TanDeltaMean
-
-            lines.forEach(line => {
-                line = line.trim(); // Remove espaços em branco
-                if (line === '') return; // Ignora linhas vazias
-
-                // Extração de dados
-                if (line.startsWith('TanDeltaSTD=')) {
-                    const tanDeltaSTD = parseFloat(line.split('=')[1].trim());
-                    if (tanDeltaSTD > maxTanDeltaSTD) {
-                        maxTanDeltaSTD = tanDeltaSTD; // Atualiza o maior valor
-                    }
-                } else if (line.startsWith('TanDeltaMean=')) {
-                    const tanDeltaMean = parseFloat(line.split('=')[1].trim());
-                    tanDeltaMeans.push(tanDeltaMean); // Adiciona o TanDeltaMean ao array
-                }
-            });
-
-            // Exibe o maior TanDeltaSTD e os valores de TanDeltaMean encontrados
-            displayMaxTanDeltaSTD(fileName, maxTanDeltaSTD, tanDeltaMeans);
-        }
-
-        // Função para exibir o maior TanDeltaSTD e os valores de TanDeltaMean
-        function displayMaxTanDeltaSTD(fileName, maxTanDeltaSTD, tanDeltaMeans) {
-            const resultDiv = document.createElement('div');
-            resultDiv.textContent = `Maior TanDeltaSTD do arquivo ${fileName}: ${maxTanDeltaSTD.toFixed(4)}, TanDeltaMeans correspondentes: ${tanDeltaMeans.length > 0 ? tanDeltaMeans.map(mean => mean.toFixed(4)).join(',     ') : 'N/A'}`; // Formata para 4 casas decimais
-            resultDisplay.appendChild(resultDiv);
-        }
+    // Atualiza o gráfico
+    tanDeltaCharts[groupIndex].update();
+}
