@@ -1,8 +1,113 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gráfico de TanDeltaMean</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Exemplo de Tabela com JavaScript</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
+
+<body>
+
+    <h1>Tabela Criada com JavaScript</h1>
+    <div id="tabela-container"></div>
+
+    <script>
+
+        // Função para criar a tabela
+        function criarTabela() {
+            // Cria um elemento de tabela
+            const tabela = document.createElement('table');
+
+            // Cria o cabeçalho da tabela
+            const thead = document.createElement('thead');
+            const cabecalho = document.createElement('tr');
+            const colunas = ['Circuito', 'Dados do Cabo', 'Informações', 'Condição'];
+            colunas.forEach(coluna => {
+                const th = document.createElement('th');
+                th.textContent = coluna;
+                cabecalho.appendChild(th);
+            });
+            thead.appendChild(cabecalho);
+            tabela.appendChild(thead);
+
+            // Cria o corpo da tabela
+            const tbody = document.createElement('tbody');
+
+            // Adiciona a primeira linha
+            const linha1 = document.createElement('tr');
+            linha1.innerHTML = `
+                <td>Unid. Ope.</td>
+                <td>Item Localização:</td>
+                <td>Data Diag.:</td>
+                
+            `;
+            tbody.appendChild(linha1);
+
+            // Adiciona a segunda linha
+            const linha2 = document.createElement('tr');
+                    linha2.innerHTML = `
+                <td>Localização: </td>
+                <td>Item Recirculação: </td>
+                <td>Próx. Diag.: </td>
+            `;
+            tbody.appendChild(linha2);
+
+            // Adiciona a terceira
+            const linha3 = document.createElement('tr');
+            const tdCompMatIsol = document.createElement('td');
+            linha3.innerHTML = `
+                <td>Origem: </td>
+            `;
+            tdCompMatIsol.innerHTML = `
+                <table style="width: 100%; padding: 0;">
+                        <td style="width: 50%;">Comp. (m): </td>
+                        <td style="width: 50%;">mat. Isol.: </td>
+                </table>
+            `;
+            linha3.appendChild(tdCompMatIsol);
+            tbody.appendChild(linha3);
+
+            const linha4 = document.createElement('tr');
+            const tdCIsolCF = document.createElement('td');
+            linha4.innerHTML = `
+                <td>Destino: </td>
+            `;
+            tdCIsolCF.innerHTML = `
+                <table style="width: 100%; padding: 0;">
+                        <td style="width: 50%;">C.Isol. (kV): </td>
+                        <td style="width: 50%;">Cabos/fase: </td>
+                </table>
+            `;
+            linha4.appendChild(tdCIsolCF);
+            tbody.appendChild(linha4);
+
+            tabela.appendChild(tbody);
+            return tabela;
+        }
+
+        // Adiciona a tabela ao container
+        const container = document.getElementById('tabela-container');
+        container.appendChild(criarTabela());
+    </script>
+
+</body>
+
+</html>

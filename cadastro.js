@@ -51,3 +51,66 @@ document.getElementById('buscarButton').addEventListener('click', function() {
     const codigoBuscado = document.getElementById('codigoInput').value; // Lê o valor do input
     buscarCodigo(codigoBuscado); // Chama a função de busca com o valor do input
 });
+
+// Função para criar a tabela
+function criarTabela() {
+    // Cria um elemento de tabela
+    const tabela = document.createElement('table');
+
+    // Cria o cabeçalho da tabela
+    const thead = document.createElement('thead');
+    const cabecalho = document.createElement('tr');
+    const colunas = ['Circuito', 'Dados do Cabo', 'Informações', 'Condição'];
+    colunas.forEach(coluna => {
+        const th = document.createElement('th');
+        th.textContent = coluna;
+        cabecalho.appendChild(th);
+    });
+    thead.appendChild(cabecalho);
+    tabela.appendChild(thead);
+
+    // Cria o corpo da tabela
+    const tbody = document.createElement('tbody');
+
+    // Adiciona a primeira linha
+    const linha1 = document.createElement('tr');
+    linha1.innerHTML = `
+<td>Unid. Ope.</td>
+<td>Item Localização:</td>
+<td>Data Diag.:</td>
+<td></td>
+`;
+    tbody.appendChild(linha1);
+
+    // Adiciona a segunda linha
+    const linha2 = document.createElement('tr');
+    linha2.innerHTML = `
+<td>Localização: </td>
+<td>Item Recirculação: </td>
+<td>Próx. Diag.: </td>
+<td></td>
+`;
+    tbody.appendChild(linha2);
+
+    // Adiciona a terceira
+    const linha3 = document.createElement('tr');
+    const tdCompMatIsol = document.createElement('td');
+    linha3.innerHTML = `
+<td>Origem: </td>
+`;
+    tdCompMatIsol.innerHTML += `
+<table style="width: 100%; border: none;">
+        <td style="width: 50%; border: none;">Comp. (m): </td>
+        <td style="width: 50%; border: none;">mat. Isol.: </td>
+</table>
+`;
+    linha3.appendChild(tdCompMatIsol);
+    tbody.appendChild(linha3);
+
+    tabela.appendChild(tbody);
+    return tabela;
+}
+
+// Adiciona a tabela ao container
+const container = document.getElementById('tabela-container');
+container.appendChild(criarTabela());
