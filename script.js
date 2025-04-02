@@ -185,7 +185,14 @@ function updateChart(groupIndex, tanDeltaMeans) {
 }
 
 ///////////////////////////////////////////////////////////////// Função para buscar o código ///////////////////////////////////////////////////////////////////
+// Função para buscar o código
 function buscarCodigo(codigoBuscado) {
+    // Verifica se codigoBuscado é uma string
+    if (typeof codigoBuscado !== 'string') {
+        console.error('O valor buscado não é uma string.');
+        return;
+    }
+
     fetch('Cabos-Elétricos.txt')
         .then(response => {
             if (!response.ok) {
@@ -195,15 +202,16 @@ function buscarCodigo(codigoBuscado) {
         })
         .then(data => {
             const linhas = data.split('\n'); // Divide o conteúdo em linhas
+            let resultado = null;
 
             // Itera sobre cada linha para encontrar o código
             for (let linha of linhas) {
                 const partes = linha.split(';'); // Divide a linha em partes
-                const codigo = partes[4].trim();
+                const codigo = partes[4] ? partes[4].trim() : ''; // Verifica se partes[4] existe
 
                 if (codigo.toLowerCase() === codigoBuscado.trim().toLowerCase()) {
                     resultado = {
-                        codigo: partes[4].trim(), // Código
+                        codigo: partes[4] ? partes[4].trim() : '', // Código
                         descricao: partes[5] ? partes[5].trim() : '', // Descrição
                         sala: partes[7] ? partes[7].trim() : '', // Sala
                         destino: partes[8] ? partes[8].trim() : '',
@@ -219,9 +227,11 @@ function buscarCodigo(codigoBuscado) {
                 console.log("Código encontrado: ", resultado.codigo);
                 console.log("Descrição: ", resultado.descricao);
                 console.log("Sala: ", resultado.sala);
-                console.log("destino: ", resultado.destino);
+                console.log("Destino: ", resultado.destino);
                 console.log("CAE: ", resultado.CAE);
                 console.log("Equipamento: ", resultado.equipamento);
+
+                criarTabela(resultado)
             } else {
                 console.log("Código não encontrado.");
             }
@@ -232,54 +242,51 @@ function buscarCodigo(codigoBuscado) {
 }
 
 // Adiciona um evento de clique ao botão
-document.getElementById('buscarButton').addEventListener('click', function () {
+document.getElementById('buscarButton').addEventListener('click', function() {
     const codigoBuscado = document.getElementById('codigoInput').value; // Lê o valor do input
     buscarCodigo(codigoBuscado); // Chama a função de busca com o valor do input
-    buscarCodigo(addToTable);
 });
 
-function criarTabela() {
+ // Função para criar a tabela
+ function criarTabela() {
     // Cria um elemento de tabela
     const tabela = document.createElement('table');
 
-    // Cria o cabeçalho da tabela
-    const thead = document.createElement('thead');
-    const cabecalho = document.createElement('tr');
-    const colunas = ['Circuito', 'Dados do Cabo', 'Informações', 'Condição'];
-
-    colunas.forEach(coluna => {
-        const th = document.createElement('th');
-        th.textContent = coluna;
-        cabecalho.appendChild(th);
-    });
-
-    thead.appendChild(cabecalho);
-    tabela.appendChild(thead);
-
     // Cria o corpo da tabela
     const tbody = document.createElement('tbody');
-    const dados = [
-        { nome: 'João', idade: 25, cidade: 'São Paulo' },
-        { nome: 'Maria', idade: 30, cidade: 'Rio de Janeiro' },
-        { nome: 'Pedro', idade: 22, cidade: 'Belo Horizonte' }
-    ];
+    tbody.innerHTML = `
+        <th>Circuito</th>
+        <th colspan = "2">Dados do Cabo</th>
+        <th>Informações</th>
+        <th>Condição</th>
+        <tr>
+            <td>Unid. Ope.: ${resultado.descricao}</td>
+            <td colspan = "2">Item Localização: </td>
+            <td>Data Diag.: </td>
+        </tr>
+        <tr>
+            <td>Localização: </td>
+            <td colspan = "2">Item Recirculação: </td>                
+            <td>Prox. Diag.: </td>
+        </tr>
+        <tr>
+            <td>Origem: </td>
+            <td>Comp.(m): </td>
+            <td>Mat. Isol.:</td>
+            <td rowspan = "2">Téc. Exec.:</td>
+        </tr>
+        <tr>
+            <td>Destino: </td>
+            <td>C. Isol.: </td>
+            <td>Cabos/fase: </td>    
+         </tr>
 
-    dados.forEach(dado => {
-        const tr = document.createElement('tr');
-        const tdNome = document.createElement('td');
-        const tdIdade = document.createElement('td');
-        const tdCidade = document.createElement('td');
-
-        tdNome.textContent = dado.nome;
-        tdIdade.textContent = dado.idade;
-        tdCidade.textContent = dado.cidade;
-
-        tr.appendChild(tdNome);
-        tr.appendChild(tdIdade);
-        tr.appendChild(tdCidade);
-        tbody.appendChild(tr);
-    });
+    `;
 
     tabela.appendChild(tbody);
     return tabela;
 }
+
+// Adiciona a tabela ao container
+const container = document.getElementById('tabela-container');
+container.appendChild(criarTabela());

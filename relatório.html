@@ -36,68 +36,38 @@
             // Cria um elemento de tabela
             const tabela = document.createElement('table');
 
-            // Cria o cabeçalho da tabela
-            const thead = document.createElement('thead');
-            const cabecalho = document.createElement('tr');
-            const colunas = ['Circuito', 'Dados do Cabo', 'Informações', 'Condição'];
-            colunas.forEach(coluna => {
-                const th = document.createElement('th');
-                th.textContent = coluna;
-                cabecalho.appendChild(th);
-            });
-            thead.appendChild(cabecalho);
-            tabela.appendChild(thead);
+            
 
             // Cria o corpo da tabela
             const tbody = document.createElement('tbody');
-
-            // Adiciona a primeira linha
-            const linha1 = document.createElement('tr');
-            linha1.innerHTML = `
-                <td>Unid. Ope.</td>
-                <td>Item Localização:</td>
-                <td>Data Diag.:</td>
-                
-            `;
-            tbody.appendChild(linha1);
-
-            // Adiciona a segunda linha
-            const linha2 = document.createElement('tr');
-                    linha2.innerHTML = `
+            tbody.innerHTML = `
+            <th>Circuito</th>
+            <th colspan = "2">Dados do Cabo</th>
+            <th>Informações</th>
+            <th>Condição</th>
+            <tr>
+                <td>Unid. Ope.: </td>
+                <td colspan = "2">Item Localização: </td>
+                <td>Data Diag.: </td>
+            </tr>
+            <tr>
                 <td>Localização: </td>
-                <td>Item Recirculação: </td>
-                <td>Próx. Diag.: </td>
-            `;
-            tbody.appendChild(linha2);
-
-            // Adiciona a terceira
-            const linha3 = document.createElement('tr');
-            const tdCompMatIsol = document.createElement('td');
-            linha3.innerHTML = `
+                <td colspan = "2">Item Recirculação: </td>                
+                <td>Prox. Diag.: </td>
+            </tr>
+            <tr>
                 <td>Origem: </td>
-            `;
-            tdCompMatIsol.innerHTML = `
-                <table style="width: 100%; padding: 0;">
-                        <td style="width: 50%;">Comp. (m): </td>
-                        <td style="width: 50%;">mat. Isol.: </td>
-                </table>
-            `;
-            linha3.appendChild(tdCompMatIsol);
-            tbody.appendChild(linha3);
-
-            const linha4 = document.createElement('tr');
-            const tdCIsolCF = document.createElement('td');
-            linha4.innerHTML = `
+                <td>Comp.(m): </td>
+                <td>Mat. Isol.:</td>
+                <td rowspan = "2">Téc. Exec.:</td>
+            </tr>
+            <tr>
                 <td>Destino: </td>
-            `;
-            tdCIsolCF.innerHTML = `
-                <table style="width: 100%; padding: 0;">
-                        <td style="width: 50%;">C.Isol. (kV): </td>
-                        <td style="width: 50%;">Cabos/fase: </td>
-                </table>
-            `;
-            linha4.appendChild(tdCIsolCF);
-            tbody.appendChild(linha4);
+                <td>C. Isol.: </td>
+                <td>Cabos/fase: </td>    
+            </tr>
+
+                `;
 
             tabela.appendChild(tbody);
             return tabela;

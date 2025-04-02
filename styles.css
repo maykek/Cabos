@@ -1,7 +1,12 @@
-.group {
-    margin-top: 20px;
-    border: 1px solid #ccc;
-    padding: 10px;
+body {
+    font-family: Arial, sans-serif;
+
+}
+
+canvas {
+    width: 400px;
+    height: 200;
+    margin: 5px auto;
 }
 
 input[type="file"] {
@@ -9,31 +14,26 @@ input[type="file"] {
     margin-top: 5px;
 }
 
-#resultDisplay{
-    margin-top: 20px;
-    white-space: pre-wrap; 
-    border: 1px solid #ccc;
-    padding: 10px;
-    max-width: 1000px;
-    max-height: 4000px;
-    overflow: auto;
+input[type="text"] {
+    display: block;
+    margin-top: 5px;
 }
 
+codigoInput {
+    text-align: center;
+}
 table {
-    margin-top: 20px;
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
+    border: 1px solid black;
     padding: 8px;
     text-align: left;
 }
 
 th {
     background-color: #f2f2f2;
-}
-
-tr:nth-child(even) {
-    background-color: #f9f9f9;
 }
