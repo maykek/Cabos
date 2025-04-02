@@ -9,13 +9,16 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-
         }
 
         canvas {
-            width: 400px;
-            height: 200;
+            width: 800px;
+            height: 400px;
             margin: 5px auto;
+        }
+
+        .chartsContainer{
+            align-self: flex-start;
         }
 
         input[type="file"] {
@@ -28,9 +31,6 @@
             margin-top: 5px;
         }
 
-        codigoInput {
-            text-align: center;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -79,12 +79,11 @@
     </div>
 
     <div id="uploadSection"></div>
-    <div id="chartsContainer"></div>
     <div id="resultDisplay"></div>
     <h1>Relatório</h1>
-    <h1>Tabela Criada com JavaScript</h1>
     <div id="tabela-container"></div>
-
+    <div id="chartsContainer"></div>
+    
     <script src="script.js"></script>
 </body>
 

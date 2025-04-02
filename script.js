@@ -29,6 +29,7 @@ let group = 0;
 let fase = '';
 let irTag = '';
 let resultado = null
+let isol = '';
 
 cableGroupsSelect.addEventListener('change', function () {
     const numberOfGroups = parseInt(this.value); // Aqui é onde numberOfGroups é declarado
@@ -231,7 +232,8 @@ function buscarCodigo(codigoBuscado) {
                 console.log("CAE: ", resultado.CAE);
                 console.log("Equipamento: ", resultado.equipamento);
 
-                criarTabela(resultado)
+                // Chama a função para criar a tabela com o resultado
+                criarTabela(resultado);
             } else {
                 console.log("Código não encontrado.");
             }
@@ -247,46 +249,59 @@ document.getElementById('buscarButton').addEventListener('click', function() {
     buscarCodigo(codigoBuscado); // Chama a função de busca com o valor do input
 });
 
- // Função para criar a tabela
- function criarTabela() {
+
+// Função para criar a tabela
+function criarTabela(resultado) {
+    // Limpa a tabela anterior, se houver
+    if(tipoCabo == 1){
+        isol = 'EPR';
+    }else if(tipoCabo == 2){
+        isol = 'XLPE';
+    }else(Error)
+    const container = document.getElementById('tabela-container');
+    container.innerHTML = ''; // Limpa o conteúdo anterior
+
     // Cria um elemento de tabela
     const tabela = document.createElement('table');
+
+    // Cria o cabeçalho da tabela
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+        <tr>
+            <th>Circuito</th>
+            <th colspan="2">Dados do Cabo</th>
+            <th>Informações</th>
+            <th>Condição</th>
+        </tr>
+    `;
+    tabela.appendChild(thead);
 
     // Cria o corpo da tabela
     const tbody = document.createElement('tbody');
     tbody.innerHTML = `
-        <th>Circuito</th>
-        <th colspan = "2">Dados do Cabo</th>
-        <th>Informações</th>
-        <th>Condição</th>
         <tr>
             <td>Unid. Ope.: ${resultado.descricao}</td>
-            <td colspan = "2">Item Localização: </td>
+            <td colspan="2">Item Localização: ${resultado.codigo}</td>
             <td>Data Diag.: </td>
         </tr>
         <tr>
-            <td>Localização: </td>
-            <td colspan = "2">Item Recirculação: </td>                
+            <td>Localização: ${resultado.sala}</td>
+            <td colspan="2">Item Recirculação: CAE ${resultado.CAE} (${resultado.equipamento})</td>                
             <td>Prox. Diag.: </td>
         </tr>
         <tr>
             <td>Origem: </td>
             <td>Comp.(m): </td>
-            <td>Mat. Isol.:</td>
-            <td rowspan = "2">Téc. Exec.:</td>
+            <td>Mat. Isol.: ${isol}</td>
+            <td rowspan="2">Téc. Exec.:</td>
         </tr>
         <tr>
             <td>Destino: </td>
             <td>C. Isol.: </td>
             <td>Cabos/fase: </td>    
-         </tr>
-
+        </tr>
     `;
 
     tabela.appendChild(tbody);
-    return tabela;
+    container.appendChild(tabela); // Adiciona a tabela ao container
 }
-
-// Adiciona a tabela ao container
-const container = document.getElementById('tabela-container');
-container.appendChild(criarTabela());
