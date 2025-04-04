@@ -17,8 +17,9 @@
             margin: 5px auto;
         }
 
-        .chartsContainer{
-            align-self: flex-start;
+        .chartsContainer {
+            display: flex;
+            justify-self: flex-start;
         }
 
         input[type="file"] {
@@ -46,7 +47,6 @@
         th {
             background-color: #f2f2f2;
         }
-
     </style>
 </head>
 
@@ -81,9 +81,10 @@
     <div id="uploadSection"></div>
     <div id="resultDisplay"></div>
     <h1>Relatório</h1>
-    <div id="tabela-container"></div>
-    <div id="chartsContainer"></div>
-    
+    <div>
+        <div id="tabela-container"></div>
+        <div style="display: flex; position: absolute;" id="chartsContainer"></div>
+    </div>
     <script src="script.js"></script>
 </body>
 

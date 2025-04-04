@@ -185,7 +185,7 @@ function updateChart(groupIndex, tanDeltaMeans) {
     tanDeltaCharts[groupIndex].update();
 }
 
-///////////////////////////////////////////////////////////////// Função para buscar o código ///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////// Relatório ///////////////////////////////////////////////////////////////////
 // Função para buscar o código
 function buscarCodigo(codigoBuscado) {
     // Verifica se codigoBuscado é uma string
@@ -218,6 +218,8 @@ function buscarCodigo(codigoBuscado) {
                         destino: partes[8] ? partes[8].trim() : '',
                         CAE: partes[18] ? partes[18].trim() : '',
                         equipamento: partes[19] ? partes[19].trim() : '',
+                        iso: partes[22] ? partes[22].trim() : '',
+                        metro: partes[23] ? partes[23].trim() : '',
                     };
                     break; // Para a busca se o código for encontrado
                 }
@@ -291,15 +293,18 @@ function criarTabela(resultado) {
         </tr>
         <tr>
             <td>Origem: </td>
-            <td>Comp.(m): </td>
+            <td>Comp.(m): ${resultado.metro}</td>
             <td>Mat. Isol.: ${isol}</td>
             <td rowspan="2">Téc. Exec.:</td>
         </tr>
         <tr>
             <td>Destino: </td>
-            <td>C. Isol.: </td>
+            <td>C. Isol.: ${resultado.iso}</td>
             <td>Cabos/fase: </td>    
         </tr>
+        <thead>
+            <th></th>
+        </thead>
     `;
 
     tabela.appendChild(tbody);
