@@ -270,14 +270,11 @@ function criarTabela(resultado) {
     const thead = document.createElement('thead');
     thead.innerHTML = `
         <tr>
-            <th>Circuito</th>
-            <th colspan="2">Dados do Cabo</th>
-            <th>Informações</th>
-            <th>Condição</th>
+            <th colspan="2" text-align = "center">Dados do Cabo</th>
         </tr>
     `;
     tabela.appendChild(thead);
-
+/*
     // Cria o corpo da tabela
     const tbody = document.createElement('tbody');
     tbody.innerHTML = `
@@ -302,11 +299,9 @@ function criarTabela(resultado) {
             <td>C. Isol.: ${resultado.iso}</td>
             <td>Cabos/fase: </td>    
         </tr>
-        <thead>
-            <th></th>
-        </thead>
+        <th colspan="6">TESTE</th>
     `;
 
-    tabela.appendChild(tbody);
+    tabela.appendChild(tbody);*/
     container.appendChild(tabela); // Adiciona a tabela ao container
 }

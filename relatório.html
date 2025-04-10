@@ -1,83 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exemplo de Tabela com JavaScript</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <title>Salvar PDF em Paisagem</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </head>
-
 <body>
 
-    <h1>Tabela Criada com JavaScript</h1>
-    <div id="tabela-container"></div>
+    <button id="salvar-pdf">Salvar como PDF em Paisagem</button>
 
     <script>
+        document.getElementById('salvar-pdf').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'landscape', // Define a orientação como paisagem
+                unit: 'cm', // Unidade de medida
+                format: 'a4' // Formato do papel
+            });
 
-        // Função para criar a tabela
-        function criarTabela() {
-            // Cria um elemento de tabela
-            const tabela = document.createElement('table');
-
-            
-
-            // Cria o corpo da tabela
-            const tbody = document.createElement('tbody');
-            tbody.innerHTML = `
-            <th>Circuito</th>
-            <th colspan = "2">Dados do Cabo</th>
-            <th>Informações</th>
-            <th>Condição</th>
-            <tr>
-                <td>Unid. Ope.: </td>
-                <td colspan = "2">Item Localização: </td>
-                <td>Data Diag.: </td>
-            </tr>
-            <tr>
-                <td>Localização: </td>
-                <td colspan = "2">Item Recirculação: </td>                
-                <td>Prox. Diag.: </td>
-            </tr>
-            <tr>
-                <td>Origem: </td>
-                <td>Comp.(m): </td>
-                <td>Mat. Isol.:</td>
-                <td rowspan = "2">Téc. Exec.:</td>
-            </tr>
-            <tr>
-                <td>Destino: </td>
-                <td>C. Isol.: </td>
-                <td>Cabos/fase: </td>    
-            </tr>
-
-                `;
-
-            tabela.appendChild(tbody);
-            return tabela;
-        }
-
-        // Adiciona a tabela ao container
-        const container = document.getElementById('tabela-container');
-        container.appendChild(criarTabela());
+            doc.text('Este é um PDF em paisagem!', 1, 1); // Adiciona texto ao PDF
+            doc.save('documento_paisagem.pdf'); // Salva o PDF
+        });
     </script>
 
 </body>
-
 </html>
