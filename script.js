@@ -28,7 +28,9 @@ let tanDeltaCharts = []; // Array para armazenar as instâncias dos gráficos
 let group = 0;
 let fase = '';
 let irTag = '';
-let resultado = null
+let resultado = null;
+let origem = null;
+let destino = null;
 let isol = '';
 
 cableGroupsSelect.addEventListener('change', function () {
@@ -209,13 +211,19 @@ function buscarCodigo(codigoBuscado) {
             for (let linha of linhas) {
                 const partes = linha.split(';'); // Divide a linha em partes
                 const codigo = partes[4] ? partes[4].trim() : ''; // Verifica se partes[4] existe
+                const circuito = partes.find(info => info.includes('P/'));
+
+                if(circuito){
+                    const [origemP, destinoP] = circuito.split('P/').map(str =>str.trim())
+                    origem = origemP;
+                    destino = destinoP;
+                }
 
                 if (codigo.toLowerCase() === codigoBuscado.trim().toLowerCase()) {
                     resultado = {
                         codigo: partes[4] ? partes[4].trim() : '', // Código
                         descricao: partes[5] ? partes[5].trim() : '', // Descrição
                         sala: partes[7] ? partes[7].trim() : '', // Sala
-                        destino: partes[8] ? partes[8].trim() : '',
                         CAE: partes[18] ? partes[18].trim() : '',
                         equipamento: partes[19] ? partes[19].trim() : '',
                         iso: partes[22] ? partes[22].trim() : '',
@@ -224,13 +232,12 @@ function buscarCodigo(codigoBuscado) {
                     break; // Para a busca se o código for encontrado
                 }
             }
-
             // Exibe o resultado
             if (resultado) {
                 console.log("Código encontrado: ", resultado.codigo);
                 console.log("Descrição: ", resultado.descricao);
                 console.log("Sala: ", resultado.sala);
-                console.log("Destino: ", resultado.destino);
+                console.log("Destino: ", destino);
                 console.log("CAE: ", resultado.CAE);
                 console.log("Equipamento: ", resultado.equipamento);
 
@@ -246,7 +253,7 @@ function buscarCodigo(codigoBuscado) {
 }
 
 // Adiciona um evento de clique ao botão
-document.getElementById('buscarButton').addEventListener('click', function() {
+document.getElementById('buscarButton').addEventListener('click', function () {
     const codigoBuscado = document.getElementById('codigoInput').value; // Lê o valor do input
     buscarCodigo(codigoBuscado); // Chama a função de busca com o valor do input
 });
@@ -255,11 +262,11 @@ document.getElementById('buscarButton').addEventListener('click', function() {
 // Função para criar a tabela
 function criarTabela(resultado) {
     // Limpa a tabela anterior, se houver
-    if(tipoCabo == 1){
+    if (tipoCabo == 1) {
         isol = 'EPR';
-    }else if(tipoCabo == 2){
+    } else if (tipoCabo == 2) {
         isol = 'XLPE';
-    }else(Error)
+    } else (Error)
     const container = document.getElementById('tabela-container');
     container.innerHTML = ''; // Limpa o conteúdo anterior
 
@@ -270,38 +277,37 @@ function criarTabela(resultado) {
     const thead = document.createElement('thead');
     thead.innerHTML = `
         <tr>
-            <th colspan="2" text-align = "center">Dados do Cabo</th>
+            <th colspan="6" text-align = "center">Dados do Cabo</th>
         </tr>
     `;
     tabela.appendChild(thead);
-/*
     // Cria o corpo da tabela
     const tbody = document.createElement('tbody');
     tbody.innerHTML = `
         <tr>
-            <td>Unid. Ope.: ${resultado.descricao}</td>
-            <td colspan="2">Item Localização: ${resultado.codigo}</td>
-            <td>Data Diag.: </td>
+            <td><strong>Unid. Ope.: </strong>${resultado.descricao}</td>
+            <td colspan="2"><strong>Item Localização: </strong>${resultado.codigo}</td>
+            <td><strong>Data Diag.: </strong></td>
         </tr>
         <tr>
-            <td>Localização: ${resultado.sala}</td>
-            <td colspan="2">Item Recirculação: CAE ${resultado.CAE} (${resultado.equipamento})</td>                
-            <td>Prox. Diag.: </td>
+            <td><strong>Localização: </strong>${resultado.sala}</td>
+            <td colspan="2"><strong>Item Recirculação: </strong>CAE ${resultado.CAE} (${resultado.equipamento})</td>                
+            <td><strong>Prox. Diag.: </strong></td>
         </tr>
         <tr>
-            <td>Origem: </td>
-            <td>Comp.(m): ${resultado.metro}</td>
-            <td>Mat. Isol.: ${isol}</td>
-            <td rowspan="2">Téc. Exec.:</td>
+            <td><strong>Origem: </strong>${origem}</td>
+            <td><strong>Comp.(m): </strong>${resultado.metro}</td>
+            <td><strong>Mat. Isol.: </strong>${isol}</td>
+            <td rowspan="2"><strong>Téc. Exec.:  </strong>ABC DEF </br><pre>        GHI JKL</pre></td>
         </tr>
         <tr>
-            <td>Destino: </td>
-            <td>C. Isol.: ${resultado.iso}</td>
-            <td>Cabos/fase: </td>    
+            <td><strong>Destino: </strong>${destino}</td>
+            <td><strong>C. Isol.: </strong>${resultado.iso}</td>
+            <td><strong>Cabos/fase: </strong></td>    
         </tr>
         <th colspan="6">TESTE</th>
     `;
 
-    tabela.appendChild(tbody);*/
+    tabela.appendChild(tbody);
     container.appendChild(tabela); // Adiciona a tabela ao container
 }
