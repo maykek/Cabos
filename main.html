@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gráfico de TanDeltaMean</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>   
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
     <style>
@@ -24,8 +24,8 @@
             justify-self: flex-start;
         }
 
-        pre{
-            font-size:19px;
+        pre {
+            font-size: 19px;
         }
 
         input[type="file"] {
@@ -40,7 +40,7 @@
 
         table {
             width: 100%;
-            border-collapse:inherit;
+            border-collapse: inherit;
         }
 
         th,
@@ -54,12 +54,15 @@
             text-align: center;
             background-color: #f2f2f2;
         }
+
         #area-captura {
-        width: 1300px; /* Largura desejada */
-        height: 300px; /* Altura desejada */
-        padding: 20px;
-        border: 1px solid #000;
-    }
+            width: 1300px;
+            /* Largura desejada */
+            height: 300px;
+            /* Altura desejada */
+            padding: 20px;
+
+        }
     </style>
 </head>
 
@@ -94,25 +97,27 @@
     <div id="uploadSection"></div>
     <div id="resultDisplay"></div>
     <h1>Relatório</h1>
-    <div id="area-captura">
-        <div id="tabela-container"></div>
-        <div style="display: flex; position: absolute;" id="chartsContainer"></div>
-    </div>
     <input type="text" name="tag" id="tag" placeholder="tag">
     <button id="salvar-pdf">Salvar como PDF</button>
+    <div id="area-captura">
+        <div id="tabela-container"></div>
+        <div style="display: flex; position: absolute; border: #000 1px ;" id="chartsContainer">
+            <div id="tabela-result"></div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
     <script>
-        document.getElementById('salvar-pdf').addEventListener('click', function() {
-            html2canvas(document.getElementById('area-captura')).then(function(canvas) {
+        document.getElementById('salvar-pdf').addEventListener('click', function () {
+            html2canvas(document.getElementById('area-captura')).then(function (canvas) {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF({
-                orientation: 'p', // Define a orientação como paisagem
-                unit: 'cm', // Unidade de medida
-                format: 'a4' // Formato do papel
-            });
+                    orientation: 'p', // Define a orientação como paisagem
+                    unit: 'cm', // Unidade de medida
+                    format: 'a4' // Formato do papel
+                });
                 const tag = document.getElementById = ('tag')
-                pdf.addImage(imgData, 'JPEG', 0, 0, 29.7, 0);
+                pdf.addImage(imgData, 'JPEG', 0, 0, 21, 0);
                 pdf.save(tag);
             });
         });

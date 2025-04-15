@@ -148,6 +148,7 @@ function updateChart(groupIndex, tanDeltaMeans) {
                         label: 'Crítico',
                         data: Array(labels.length).fill(limMax),
                         borderColor: 'rgb(238, 40, 5)',
+                        backgroundColor: 'rgb(255, 255, 255)',
                         borderDash: [5, 5], // Linhas tracejadas
                         fill: false
                     },
@@ -155,6 +156,7 @@ function updateChart(groupIndex, tanDeltaMeans) {
                         label: 'Alerta',
                         data: Array(labels.length).fill(limMin),
                         borderColor: 'rgb(222, 246, 5)',
+                        backgroundColor: 'rgb(255, 255, 255)',
                         borderDash: [5, 5], // Linhas tracejadas
                         fill: false
                     }
@@ -165,6 +167,11 @@ function updateChart(groupIndex, tanDeltaMeans) {
                 scales: {
                     y: {
                         beginAtZero: true
+                    }
+                },
+                plugins:{
+                    legend:{
+                        position: 'right',
                     }
                 }
             }
@@ -179,6 +186,7 @@ function updateChart(groupIndex, tanDeltaMeans) {
         label: `${fase}`,
         data: tanDeltaMeans,
         borderColor: `hsl(${group * 245}, 100%, 50%)`, // Cores diferentes para cada grupo
+        backgroundColor: `hsl(${group * 245}, 100%, 50%)`,
         fill: false,
         tension: 0.1
     });
@@ -298,7 +306,7 @@ function criarTabela(resultado) {
             <td><strong>Origem: </strong>${origem}</td>
             <td><strong>Comp.(m): </strong>${resultado.metro}</td>
             <td><strong>Mat. Isol.: </strong>${isol}</td>
-            <td rowspan="2"><strong>Téc. Exec.:  </strong>ABC DEF </br><pre>        GHI JKL</pre></td>
+            <td rowspan="2" valign="middle"><strong>Téc. Exec.:   </strong>ABC DEF </br><pre>        GHI JKL</pre></td>
         </tr>
         <tr>
             <td><strong>Destino: </strong>${destino}</td>
