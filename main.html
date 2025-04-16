@@ -101,27 +101,12 @@
     <button id="salvar-pdf">Salvar como PDF</button>
     <div id="area-captura">
         <div id="tabela-container"></div>
-        <div style="display: flex; position: absolute; border: #000 1px ;" id="chartsContainer">
+        <div style="display: flex; position: absolute; border: #000 1px solid;" id="chartsContainer">
             <div id="tabela-result"></div>
         </div>
     </div>
 
     <script src="script.js"></script>
-    <script>
-        document.getElementById('salvar-pdf').addEventListener('click', function () {
-            html2canvas(document.getElementById('area-captura')).then(function (canvas) {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF({
-                    orientation: 'p', // Define a orientação como paisagem
-                    unit: 'cm', // Unidade de medida
-                    format: 'a4' // Formato do papel
-                });
-                const tag = document.getElementById = ('tag')
-                pdf.addImage(imgData, 'JPEG', 0, 0, 21, 0);
-                pdf.save(tag);
-            });
-        });
-    </script>
 </body>
 
 </html>
