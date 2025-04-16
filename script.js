@@ -19,7 +19,15 @@ const maxXLPETU = 94;
 const minXLPETU = 6.7;
 const maxXLPETUTU = 50;
 const minXLPETUTU = 2;
+const date = new Date();
+const dia = date.getDate();
+const mes = date.getMonth() + 1; // Adiciona 1, pois os meses começam em 0
+const ano = date.getFullYear();
+const Data = `${dia}-${mes}-${ano}`;
 
+
+let tagCad = null;
+let tag = null;
 let tipoCabo = 0;
 let limMax = 0;
 let limMin = 0;
@@ -132,7 +140,7 @@ tipoCaboSelect.addEventListener('change', function () {
 })
 
 
-// Função para atualizar o gráfico
+/////////////////////////////////////////////////////// Função para atualizar o gráfico////////////////////////////////////////////////////////
 function updateChart(groupIndex, tanDeltaMeans) {
     const ctx = document.getElementById(`tanDeltaChart-${groupIndex}`).getContext('2d');
     const labels = Array.from({ length: inputsPerGroup }, (_, i) => `MTD (${(i * 0.5).toFixed(1)} * U0) [E-3]`)
@@ -169,8 +177,8 @@ function updateChart(groupIndex, tanDeltaMeans) {
                         beginAtZero: true
                     }
                 },
-                plugins:{
-                    legend:{
+                plugins: {
+                    legend: {
                         position: 'right',
                     }
                 }
@@ -213,7 +221,7 @@ function buscarCodigo(codigoBuscado) {
         })
         .then(data => {
             const linhas = data.split('\n'); // Divide o conteúdo em linhas
-            let resultado = null;
+
 
             // Itera sobre cada linha para encontrar o código
             for (let linha of linhas) {
@@ -221,8 +229,8 @@ function buscarCodigo(codigoBuscado) {
                 const codigo = partes[4] ? partes[4].trim() : ''; // Verifica se partes[4] existe
                 const circuito = partes.find(info => info.includes('P/'));
 
-                if(circuito){
-                    const [origemP, destinoP] = circuito.split('P/').map(str =>str.trim())
+                if (circuito) {
+                    const [origemP, destinoP] = circuito.split('P/').map(str => str.trim())
                     origem = origemP;
                     destino = destinoP;
                 }
@@ -232,6 +240,7 @@ function buscarCodigo(codigoBuscado) {
                         codigo: partes[4] ? partes[4].trim() : '', // Código
                         descricao: partes[5] ? partes[5].trim() : '', // Descrição
                         sala: partes[7] ? partes[7].trim() : '', // Sala
+                        Tag: partes[9] ? partes[9].trim() : '',
                         CAE: partes[18] ? partes[18].trim() : '',
                         equipamento: partes[19] ? partes[19].trim() : '',
                         iso: partes[22] ? partes[22].trim() : '',
@@ -248,11 +257,20 @@ function buscarCodigo(codigoBuscado) {
                 console.log("Destino: ", destino);
                 console.log("CAE: ", resultado.CAE);
                 console.log("Equipamento: ", resultado.equipamento);
+                console.log("Tag: ", resultado.Tag);
 
                 // Chama a função para criar a tabela com o resultado
                 criarTabela(resultado);
             } else {
                 console.log("Código não encontrado.");
+            }
+            if (resultado.Tag == '') {
+                const tag1 = document.getElementById('tag').value;
+                tag = `${resultado.CAE}-${tag1}-${Data}`;
+                tagCad = `${resultado.Tag}`;
+            } else {
+                tag = `${resultado.CAE}_${resultado.Tag}_${Data}`;
+                tagCad = `${resultado.Tag}`;
             }
         })
         .catch(error => {
@@ -299,7 +317,7 @@ function criarTabela(resultado) {
         </tr>
         <tr>
             <td><strong>Localização: </strong>${resultado.sala}</td>
-            <td colspan="2"><strong>Item Recirculação: </strong>CAE ${resultado.CAE} (${resultado.equipamento})</td>                
+            <td colspan="2"><strong>Item Recirculação: </strong> ${resultado.CAE} (${resultado.equipamento})</td>                
             <td><strong>Prox. Diag.: </strong></td>
         </tr>
         <tr>
@@ -319,3 +337,27 @@ function criarTabela(resultado) {
     tabela.appendChild(tbody);
     container.appendChild(tabela); // Adiciona a tabela ao container
 }
+///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
+document.getElementById('salvar-pdf').addEventListener('click', function () {
+    const tag1 = document.getElementById('tag').value;
+    if (tagCad || tag1) {
+        var element = document.getElementById('area-captura');
+        html2canvas(element, { scale: 5 }).then(function (canvas) {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'p', // Define a orientação como paisagem
+                unit: 'cm', // Unidade de medida
+                format: 'a4' // Formato do papel
+            });
+            pdf.addImage(imgData, 'JPEG', 0, 0, 21, 0);
+            pdf.save(tag);
+            console.log('Tag:', tag);
+        });
+    } 
+    else {
+        window.alert('Insira um Tag para salvar o relatório');
+        console.log('Tag:', tag);
+        console.log('tagCad: ',tagCad);
+        console.log('tag1: ',tag1);  
+    }
+});
