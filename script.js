@@ -25,8 +25,11 @@ const mes = date.getMonth() + 1; // Adiciona 1, pois os meses começam em 0
 const ano = date.getFullYear();
 const Data = `${dia}-${mes}-${ano}`;
 
+<<<<<<< HEAD
 
 let tagCad = null;
+=======
+>>>>>>> 5fc33e247c39d87d332984649db3d781cdddb9ad
 let tag = null;
 let tipoCabo = 0;
 let limMax = 0;
@@ -264,6 +267,7 @@ function buscarCodigo(codigoBuscado) {
             } else {
                 console.log("Código não encontrado.");
             }
+<<<<<<< HEAD
             if (resultado.Tag == '') {
                 const tag1 = document.getElementById('tag').value;
                 tag = `${resultado.CAE}-${tag1}-${Data}`;
@@ -272,6 +276,12 @@ function buscarCodigo(codigoBuscado) {
                 tag = `${resultado.CAE}_${resultado.Tag}_${Data}`;
                 tagCad = `${resultado.Tag}`;
             }
+=======
+
+            const tag1 = document.getElementById('tag').value.toUpperCase();
+            tag = `${resultado.CAE}-${tag1}-${data}`;
+
+>>>>>>> 5fc33e247c39d87d332984649db3d781cdddb9ad
         })
         .catch(error => {
             console.error('Erro:', error);
@@ -339,8 +349,12 @@ function criarTabela(resultado) {
 }
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
 document.getElementById('salvar-pdf').addEventListener('click', function () {
+<<<<<<< HEAD
     const tag1 = document.getElementById('tag').value;
     if (tagCad || tag1) {
+=======
+    if (tag) {
+>>>>>>> 5fc33e247c39d87d332984649db3d781cdddb9ad
         var element = document.getElementById('area-captura');
         html2canvas(element, { scale: 5 }).then(function (canvas) {
             const imgData = canvas.toDataURL('image/png');
@@ -351,6 +365,7 @@ document.getElementById('salvar-pdf').addEventListener('click', function () {
             });
             pdf.addImage(imgData, 'JPEG', 0, 0, 21, 0);
             pdf.save(tag);
+<<<<<<< HEAD
             console.log('Tag:', tag);
         });
     } 
@@ -359,5 +374,10 @@ document.getElementById('salvar-pdf').addEventListener('click', function () {
         console.log('Tag:', tag);
         console.log('tagCad: ',tagCad);
         console.log('tag1: ',tag1);  
+=======
+            console.log(tag);
+        });
+    } else{window.alert('Insira um Tag para salvar o relatório');
+>>>>>>> 5fc33e247c39d87d332984649db3d781cdddb9ad
     }
 });
