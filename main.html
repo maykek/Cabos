@@ -19,6 +19,35 @@
             margin: 5px auto;
         }
 
+        #buscar {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        #isolante {
+            display: flexbox;
+            flex-direction: row;
+            height: 250px;
+            padding: 15px;
+            margin-left: 10px;
+            border: #000 1px solid;
+
+        }
+
+        #upload {
+            display: flexbox;
+            flex-direction: row;
+            height: auto;
+            padding: 15px;
+            margin-left: 10px;
+            border: #000 1px solid;
+
+        }
+
         .chartsContainer {
             display: flex;
             justify-self: flex-start;
@@ -34,8 +63,8 @@
         }
 
         input[type="text"] {
-            display: block;
             margin-top: 5px;
+            margin-bottom: 5px;
         }
 
         table {
@@ -63,47 +92,79 @@
             padding: 20px;
 
         }
+
+        #preencher {
+            display: flex;
+            flex-direction: row;
+        }
     </style>
 </head>
 
 <body>
     <h1>Upload de Arquivos de Teste de Cabos</h1>
+    <div id="preencher">
+        <div style="border: #000 1px solid; height: 250px; padding: 15px;">
+            <div style="display:flex; align-items: center; justify-content: center;">
+                <p>Insira o número do Item Funcional</p>
+            </div>
+            <div id="buscar">
+                <input type="text" id="codigoInput" placeholder="Item Funcional">
+                <button id="buscarButton">Buscar</button>
+            </div>
+            <div>
+                <label for="tecnicos">Téc. Exec.</label>
+                <select id="tecnicos1">
+                    <option value="0">Selecione</option>
+                    <option value="1">Diego Alessandro</option>
+                    <option value="2">José Elio</option>
+                    <option value="3">Mayke Kreitlow</option>
+                    <option value="4">Paulo Valandro</option>
+                    <option value="5">Victor Costa</option>
+                    <option value="6">Vitor Camargo</option>
+                </select>
+                <select id="tecnicos2">
+                    <option value="0">Selecione</option>
+                    <option value="1">Diego Alessandro</option>
+                    <option value="2">José Elio</option>
+                    <option value="3">Mayke Kreitlow</option>
+                    <option value="4">Paulo Valandro</option>
+                    <option value="5">Victor Costa</option>
+                    <option value="6">Vitor Camargo</option>
+                </select>
+            </div>
 
-    <div>
-        <label for="tipoCabo">Tipo de material isolante</label>
-        <select id="tipoCabo">
-            <option value="0">Selecione</option>
-            <option value="1">EPR</option>
-            <option value="2">XLPE</option>
-        </select>
+        </div>
+        <div id="isolante" style="display: none;">
+            <label for="tipoCabo">Tipo de material isolante</label>
+            <select id="tipoCabo">
+                <option value="0">Selecione</option>
+                <option value="1">EPR</option>
+                <option value="2">XLPE</option>
+            </select>
+        </div>
+        <div id="upload">
+            <label for="cableGroups" style="margin-bottom: 15px;">Selecione o número de grupos de cabos:</label>
+            <select id="cableGroups">
+                <option value="0">Selecione</option>
+                <option value="1">1 grupo (3 cabos)</option>
+                <option value="2">2 grupos (6 cabos)</option>
+                <option value="3">3 grupos (9 cabos)</option>
+                <option value="4">4 grupos (12 cabos)</option>
+                <option value="5">5 grupos (15 cabos)</option>
+                <option value="6">6 grupos (18 cabos)</option>
+            </select>
+            <div id="uploadSection" style="display: flex; flex-direction: row; padding: 15px;"></div>
+        </div>
     </div>
-    <div>
-        <label for="cableGroups">Selecione o número de grupos de cabos:</label>
-        <select id="cableGroups">
-            <option value="0">Selecione</option>
-            <option value="1">1 grupo (3 cabos)</option>
-            <option value="2">2 grupos (6 cabos)</option>
-            <option value="3">3 grupos (9 cabos)</option>
-            <option value="4">4 grupos (12 cabos)</option>
-            <option value="5">5 grupos (15 cabos)</option>
-            <option value="6">6 grupos (18 cabos)</option>
-        </select>
-    </div>
-    <div>
-        <input type="text" id="codigoInput" placeholder="Item Funcional">
-        <button id="buscarButton">Buscar</button>
-    </div>
-
-    <div id="uploadSection"></div>
     <div id="resultDisplay"></div>
     <h1>Relatório</h1>
     <input type="text" id="tag" placeholder="tag">
     <button id="salvar-pdf">Salvar como PDF</button>
     <div id="area-captura">
         <div id="tabela-container"></div>
-        <div style="display: flex; position: absolute; border: #000 1px solid;" id="chartsContainer">
-            <div id="tabela-result"></div>
+        <div style="display: flex; flex-direction: column; width: 800px; border: #000 1px solid;" id="chartsContainer">
         </div>
+        <div id="tabela-result"></div>
     </div>
 
     <script src="script.js"></script>

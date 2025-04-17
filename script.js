@@ -40,6 +40,7 @@ let resultado = null;
 let origem = null;
 let destino = null;
 let isol = '';
+let isol1 = null;
 
 cableGroupsSelect.addEventListener('change', function () {
     const numberOfGroups = parseInt(this.value); // Aqui é onde numberOfGroups é declarado
@@ -122,7 +123,7 @@ function processFile(fileContent, fileName, groupIndex) {
     updateChart(groupIndex, tanDeltaMeans);
 }
 
-// Função para atulizar limites do gráfico
+// Função para atualizar limites do gráfico
 tipoCaboSelect.addEventListener('change', function () {
     tipoCabo = parseInt(this.value)
 
@@ -130,12 +131,9 @@ tipoCaboSelect.addEventListener('change', function () {
         limMax = maxEPRTD;
         limMin = minEPRTD;
     }
-    else if (tipoCabo == 2) {
+    if (tipoCabo == 2) {
         limMax = maxXLPETD;
         limMin = minXLPETD;
-    } else {
-        limMax = 0;
-        limMin = 0;
     }
 })
 
@@ -243,7 +241,7 @@ function buscarCodigo(codigoBuscado) {
                         Tag: partes[9] ? partes[9].trim() : '',
                         CAE: partes[18] ? partes[18].trim() : '',
                         equipamento: partes[19] ? partes[19].trim() : '',
-                        matIsol: partes[20] ? partes [20].trim() : '',
+                        matIsol: partes[20] ? partes[20].trim() : '',
                         iso: partes[23] ? partes[23].trim() : '',
                         metro: partes[24] ? partes[24].trim() : '',
                     };
@@ -252,6 +250,7 @@ function buscarCodigo(codigoBuscado) {
             }
             // Exibe o resultado
             if (resultado) {
+                isol1 = resultado.matIsol;
                 console.log("Código encontrado: ", resultado.codigo);
                 console.log("Descrição: ", resultado.descricao);
                 console.log("Sala: ", resultado.sala);
@@ -259,9 +258,19 @@ function buscarCodigo(codigoBuscado) {
                 console.log("CAE: ", resultado.CAE);
                 console.log("Equipamento: ", resultado.equipamento);
                 console.log("Tag: ", resultado.Tag);
-
+                console.log('islo1: ', isol1);
+                if (isol1 == '') {
+                    document.getElementById('isolante').style.display = 'block';
+                    if (tipoCabo == 1) {
+                        isol = 'EPR';
+                        criarTabela(resultado);
+                    } else if (tipoCabo == 2) {
+                        isol = 'XLPE';
+                        criarTabela(resultado);
+                    } else (Error)
+                } else { isol = isol1; cabo() }
                 // Chama a função para criar a tabela com o resultado
-                criarTabela(resultado);
+                
             } else {
                 console.log("Código não encontrado.");
             }
@@ -277,8 +286,20 @@ function buscarCodigo(codigoBuscado) {
         .catch(error => {
             console.error('Erro:', error);
         });
-}
 
+
+}
+function cabo(){
+    if(isol1 == 'XLPE'){
+        limMax = maxXLPETD;
+        limMin = minXLPETD;
+    }
+    if(isol1 =='EPR'){
+        limMax = maxEPRTD;
+        limMin = minEPRTD;
+    }
+    criarTabela(resultado);
+}
 // Adiciona um evento de clique ao botão
 document.getElementById('buscarButton').addEventListener('click', function () {
     const codigoBuscado = document.getElementById('codigoInput').value; // Lê o valor do input
@@ -289,11 +310,6 @@ document.getElementById('buscarButton').addEventListener('click', function () {
 // Função para criar a tabela
 function criarTabela(resultado) {
     // Limpa a tabela anterior, se houver
-    if (tipoCabo == 1) {
-        isol = 'EPR';
-    } else if (tipoCabo == 2) {
-        isol = 'XLPE';
-    } else (Error)
     const container = document.getElementById('tabela-container');
     container.innerHTML = ''; // Limpa o conteúdo anterior
 
@@ -324,7 +340,7 @@ function criarTabela(resultado) {
         <tr>
             <td><strong>Origem: </strong>${origem}</td>
             <td><strong>Comp.(m): </strong>${resultado.metro}</td>
-            <td><strong>Mat. Isol.: </strong>${resultado.matIsol}</td>
+            <td><strong>Mat. Isol.: </strong>${isol}</td>
             <td rowspan="2" valign="middle"><strong>Téc. Exec.:   </strong>ABC DEF </br><pre>        GHI JKL</pre></td>
         </tr>
         <tr>
@@ -354,11 +370,11 @@ document.getElementById('salvar-pdf').addEventListener('click', function () {
             pdf.save(tag);
             console.log('Tag:', tag);
         });
-    } 
+    }
     else {
         window.alert('Insira um Tag para salvar o relatório');
         console.log('Tag:', tag);
-        console.log('tagCad: ',tagCad);
-        console.log('tag1: ',tag1);  
+        console.log('tagCad: ', tagCad);
+        console.log('tag1: ', tag1);
     }
 });
