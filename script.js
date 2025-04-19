@@ -309,6 +309,8 @@ document.getElementById('buscarButton').addEventListener('click', function () {
 
 // Função para criar a tabela
 function criarTabela(resultado) {
+    tec1 = document.getElementById('tecnicos1').value
+    tec2 = document.getElementById('tecnicos2').value
     // Limpa a tabela anterior, se houver
     const container = document.getElementById('tabela-container');
     container.innerHTML = ''; // Limpa o conteúdo anterior
@@ -341,9 +343,10 @@ function criarTabela(resultado) {
             <td><strong>Origem: </strong>${origem}</td>
             <td><strong>Comp.(m): </strong>${resultado.metro}</td>
             <td><strong>Mat. Isol.: </strong>${isol}</td>
-            <td rowspan="2" valign="middle"><strong>Téc. Exec.:   </strong>ABC DEF </br><pre>        GHI JKL</pre></td>
-        </tr>
-        <tr>
+            <td colspan="2" valign="middle"><strong>Téc. Exec.:   </strong></td>
+            <td colspan="2" valign="middle">${tec1}</br>${tec2}</td>
+            </tr>
+            <tr>
             <td><strong>Destino: </strong>${destino}</td>
             <td><strong>C. Isol.: </strong>${resultado.iso}</td>
             <td><strong>Cabos/fase: </strong></td>    
