@@ -270,7 +270,7 @@ function buscarCodigo(codigoBuscado) {
                     } else (Error)
                 } else { isol = isol1; cabo() }
                 // Chama a função para criar a tabela com o resultado
-                
+
             } else {
                 console.log("Código não encontrado.");
             }
@@ -289,16 +289,17 @@ function buscarCodigo(codigoBuscado) {
 
 
 }
-function cabo(){
-    if(isol1 == 'XLPE'){
+function cabo() {
+    if (isol1 == 'XLPE') {
         limMax = maxXLPETD;
         limMin = minXLPETD;
     }
-    if(isol1 =='EPR'){
+    if (isol1 == 'EPR') {
         limMax = maxEPRTD;
         limMin = minEPRTD;
     }
     criarTabela(resultado);
+    tabelaDados();
 }
 // Adiciona um evento de clique ao botão
 document.getElementById('buscarButton').addEventListener('click', function () {
@@ -351,11 +352,95 @@ function criarTabela(resultado) {
             <td><strong>C. Isol.: </strong>${resultado.iso}</td>
             <td><strong>Cabos/fase: </strong></td>    
         </tr>
-        <th colspan="6">TESTE</th>
+        <th colspan="6">Resultado dos Testes</th>
     `;
 
     tabela.appendChild(tbody);
-    container.appendChild(tabela); // Adiciona a tabela ao container
+    if (tec1 && tec2 != '0') {
+        container.appendChild(tabela); // Adiciona a tabela ao container
+    } else { window.alert('Insira os nomes dos técnicos'); }
+
+}
+function tabelaDados() {
+    const container = document.getElementById('tabela-result');
+    container.innerHTML = '';
+    const tabela = document.createElement('table');
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+    <tr>
+        <th> </th>
+        <th colspan="2">R</th>
+        <th colspan="2">S</th>
+        <th colspan="2">T</th>
+    </tr>
+    `;
+    tabela.appendChild(thead);
+    container.appendChild(tabela);
+
+    const tbody = document.createElement("tbody");
+    tbody.innerHTML = `
+    <tr>
+        <th>MTD(0,5*U0) [E-3]</th>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <th>MTD(1,0*U0) [E-3]</th>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <th>MTD(1,5*U0) [E-3]</th>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <th>Desvio Padrão</th>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <th>Tip Up [E-3]</th>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <th>Tip Up Tip Up [E-3]</th>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    `;
+    tabela.appendChild(tbody)
+}
+function mudarCor() {
+    var cabecalhos = document.querySelectorAll("th");
+    var condicao = document.getElementById("condicao").value;
+
+    // Remove todas as classes de cor dos cabeçalhos
+    cabecalhos.forEach(function (th) {
+        th.classList.remove("normal", "alerta", "critico");
+    });
+
+    // Adiciona a classe correspondente à condição selecionada
+    if (condicao === "normal") {
+        cabecalhos.forEach(function (th) {
+            th.classList.add("normal");
+        });
+    } else if (condicao === "alerta") {
+        cabecalhos.forEach(function (th) {
+            th.classList.add("alerta");
+        });
+    } else if (condicao === "critico") {
+        cabecalhos.forEach(function (th) {
+            th.classList.add("critico");
+        });
+    }
 }
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
 document.getElementById('salvar-pdf').addEventListener('click', function () {

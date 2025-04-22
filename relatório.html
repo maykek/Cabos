@@ -3,25 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salvar PDF em Paisagem</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <title>Tabela com Cores</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: center;
+        }
+        .normal {
+            background-color: green;
+            color: white;
+        }
+        .critico {
+            background-color: red;
+            color: white;
+        }
+        .alerta {
+            background-color: yellow;
+            color: black;
+        }
+    </style>
 </head>
 <body>
 
-    <button id="salvar-pdf">Salvar como PDF em Paisagem</button>
+    <h1>Tabela de Condições</h1>
+    
+    <label for="condicao">Selecione a condição:</label>
+    <select id="condicao" onchange="mudarCor()">
+        <option value="normal">Normal</option>
+        <option value="alerta">Crítico</option>
+        <option value="critico">Crítico</option>
+    </select>
+
+    <table id="minhaTabela">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Exemplo de item 1</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Exemplo de item 2</td>
+            </tr>
+        </tbody>
+    </table>
 
     <script>
-        document.getElementById('salvar-pdf').addEventListener('click', function() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'landscape', // Define a orientação como paisagem
-                unit: 'cm', // Unidade de medida
-                format: 'a4' // Formato do papel
-            });
+        function mudarCor() {
+            var tabela = document.getElementById("minhaTabela");
+            var condicao = document.getElementById("condicao").value;
 
-            doc.text('Este é um PDF em paisagem!', 1, 1); // Adiciona texto ao PDF
-            doc.save('documento_paisagem.pdf'); // Salva o PDF
-        });
+            // Remove todas as classes de cor
+            tabela.classList.remove("normal", "alerta", "critico");
+
+            // Adiciona a classe correspondente à condição selecionada
+            if (condicao === "normal") {
+                tabela.classList.add("normal");
+            } else if (condicao === "alerta") {
+                tabela.classList.add("alerta");
+            } else if (condicao === "critico") {
+                tabela.classList.add("critico");
+            }
+        }
     </script>
 
 </body>

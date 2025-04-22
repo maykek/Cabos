@@ -14,8 +14,8 @@
         }
 
         canvas {
-            width: 800px;
-            height: 400px;
+            width: 500px;
+            height: 300px;
             margin: 5px auto;
         }
 
@@ -31,7 +31,7 @@
         #isolante {
             display: flexbox;
             flex-direction: row;
-            height: 250px;
+            height: 300px;
             padding: 15px;
             margin-left: 10px;
             border: #000 1px solid;
@@ -65,6 +65,7 @@
         input[type="text"] {
             margin-top: 5px;
             margin-bottom: 5px;
+            width: 200px;
         }
 
         table {
@@ -84,6 +85,21 @@
             background-color: #f2f2f2;
         }
 
+        .normal {
+            background-color: rgb(93, 195, 93);
+            color: white;
+        }
+
+        .critico {
+            background-color: rgb(248, 103, 103);
+            color: white;
+        }
+
+        .alerta {
+            background-color: rgb(244, 244, 107);
+            color: black;
+        }
+
         #area-captura {
             width: 1300px;
             /* Largura desejada */
@@ -97,42 +113,70 @@
             display: flex;
             flex-direction: row;
         }
+
+        #buscarButton {
+            padding: 10px;
+            width: 300px;
+            margin-top: 10px;
+            background-color: #f000;
+        }
     </style>
 </head>
 
 <body>
-    <h1>Upload de Arquivos de Teste de Cabos</h1>
+    <h1>Relatório de Teste de Cabos</h1>
     <div id="preencher">
-        <div style="border: #000 1px solid; height: 250px; padding: 15px;">
-            <div style="display:flex; align-items: center; justify-content: center;">
-                <p>Insira o número do Item Funcional</p>
+        <div style="border: #000 1px solid; height: 300px; padding: 15px;">
+            <fieldset>
+                <legend>Insira o número do Item Funcional</legend>
+                <div id="buscar">
+                    <input type="text" id="codigoInput" placeholder="Item Funcional">
+                </div>
+            </fieldset>
+            <div>
+                <fieldset>
+                    <legend for="tecnicos">Téc. Exec.</legend>
+                    <select id="tecnicos1">
+                        <option value="0">Selecione</option>
+                        <option value="Diego Alessandro">Diego Alessandro</option>
+                        <option value="José Elio">José Elio</option>
+                        <option value="Mayke Kreitlow">Mayke Kreitlow</option>
+                        <option value="Paulo Valandro">Paulo Valandro</option>
+                        <option value="Raycon Nieiro">Raycon Nieiro</option>
+                        <option value="Victor Costa">Victor Costa</option>
+                        <option value="Vitor Camargo">Vitor Camargo</option>
+                    </select>
+                    <select id="tecnicos2">
+                        <option value="0">Selecione</option>
+                        <option value="Diego Alessandro">Diego Alessandro</option>
+                        <option value="José Elio">José Elio</option>
+                        <option value="Mayke Kreitlow">Mayke Kreitlow</option>
+                        <option value="Paulo Valandro">Paulo Valandro</option>
+                        <option value="Raycon Nieiro">Raycon Nieiro</option>
+                        <option value="Victor Costa">Victor Costa</option>
+                        <option value="Vitor Camargo">Vitor Camargo</option>
+                    </select>
+                </fieldset>
             </div>
-            <div id="buscar">
-                <input type="text" id="codigoInput" placeholder="Item Funcional">
+            <div style="padding-top: 10px;">
+                <fieldset>
+                    <legend>Tipo de teste:</legend>
+                    <div>
+                        <input type="checkbox" id="TD" checked />
+                        <label for="scales">TD</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="DP" />
+                        <label for="horns">DP</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="VLF" />
+                        <label for="horns">VLF</label>
+                    </div>
+                </fieldset>
                 <button id="buscarButton">Buscar</button>
             </div>
-            <div>
-                <label for="tecnicos">Téc. Exec.</label>
-                <select id="tecnicos1">
-                    <option value="0">Selecione</option>
-                    <option value="Diego Alessandro">Diego Alessandro</option>
-                    <option value="José Elio">José Elio</option>
-                    <option value="Mayke Kreitlow">Mayke Kreitlow</option>
-                    <option value="Paulo Valandro">Paulo Valandro</option>
-                    <option value="Victor Costa">Victor Costa</option>
-                    <option value="Vitor Camargo">Vitor Camargo</option>
-                </select>
-                <select id="tecnicos2">
-                    <option value="0">Selecione</option>
-                    <option value="Diego Alessandro">Diego Alessandro</option>
-                    <option value="José Elio">José Elio</option>
-                    <option value="Mayke Kreitlow">Mayke Kreitlow</option>
-                    <option value="Paulo Valandro">Paulo Valandro</option>
-                    <option value="Victor Costa">Victor Costa</option>
-                    <option value="Vitor Camargo">Vitor Camargo</option>
-                </select>
-            </div>
-
         </div>
         <div id="isolante" style="display: none;">
             <label for="tipoCabo">Tipo de material isolante</label>
@@ -154,6 +198,13 @@
                 <option value="6">6 grupos (18 cabos)</option>
             </select>
             <div id="uploadSection" style="display: flex; flex-direction: row; padding: 15px;"></div>
+            <label for="condicao">Selecione a condição:</label>
+            <select id="condicao" onchange="mudarCor()">
+                <option value="0">Selecione</option>
+                <option value="normal">Normal</option>
+                <option value="alerta">Crítico</option>
+                <option value="critico">Crítico</option>
+            </select>
         </div>
     </div>
     <div id="resultDisplay"></div>
@@ -162,9 +213,11 @@
     <button id="salvar-pdf">Salvar como PDF</button>
     <div id="area-captura">
         <div id="tabela-container"></div>
-        <div style="display: flex; flex-direction: column; width: 800px; border: #000 1px solid;" id="chartsContainer">
+        <div style="display: flex; flex-direction: row;">
+            <div style="display: flex; flex-direction: column; width: 800px; border: #000 1px solid;"
+                id="chartsContainer"></div>
+            <div id="tabela-result" style="width: 100%;"></div>
         </div>
-        <div id="tabela-result"></div>
     </div>
 
     <script src="script.js"></script>
