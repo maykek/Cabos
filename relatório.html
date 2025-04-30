@@ -3,78 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabela com Cores</title>
+    <title>Tabela com Inputs</title>
     <style>
         table {
-            width: 100%;
             border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
         }
         th, td {
-            border: 1px solid #000;
-            padding: 10px;
-            text-align: center;
-        }
-        .normal {
-            background-color: green;
-            color: white;
-        }
-        .critico {
-            background-color: red;
-            color: white;
-        }
-        .alerta {
-            background-color: yellow;
-            color: black;
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
         }
     </style>
 </head>
 <body>
 
-    <h1>Tabela de Condições</h1>
-    
-    <label for="condicao">Selecione a condição:</label>
-    <select id="condicao" onchange="mudarCor()">
-        <option value="normal">Normal</option>
-        <option value="alerta">Crítico</option>
-        <option value="critico">Crítico</option>
-    </select>
+    <h1>Tabela Dinâmica com Inputs</h1>
+    <input type="text" id="input1" placeholder="Valor 1">
+    <input type="text" id="input2" placeholder="Valor 2">
+    <input type="text" id="input3" placeholder="Valor 3">
+    <button id="addValues">Adicionar Valores</button>
 
-    <table id="minhaTabela">
+    <table id="myTable">
         <thead>
             <tr>
-                <th>Item</th>
-                <th>Descrição</th>
+                <th>Valores</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>1</td>
-                <td>Exemplo de item 1</td>
+                <td></td>
             </tr>
             <tr>
-                <td>2</td>
-                <td>Exemplo de item 2</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
             </tr>
         </tbody>
     </table>
 
     <script>
-        function mudarCor() {
-            var tabela = document.getElementById("minhaTabela");
-            var condicao = document.getElementById("condicao").value;
+        const addValuesButton = document.getElementById('addValues');
+        const table = document.getElementById('myTable');
+        const input1 = document.getElementById('input1');
+        const input2 = document.getElementById('input2');
+        const input3 = document.getElementById('input3');
 
-            // Remove todas as classes de cor
-            tabela.classList.remove("normal", "alerta", "critico");
+        addValuesButton.addEventListener('click', () => {
+            const values = [input1.value, input2.value, input3.value];
 
-            // Adiciona a classe correspondente à condição selecionada
-            if (condicao === "normal") {
-                tabela.classList.add("normal");
-            } else if (condicao === "alerta") {
-                tabela.classList.add("alerta");
-            } else if (condicao === "critico") {
-                tabela.classList.add("critico");
-            }
-        }
+            // Adiciona uma nova coluna ao cabeçalho
+            const th = document.createElement('th');
+            th.textContent = `Coluna ${table.querySelectorAll('th').length}`;
+            table.querySelector('thead tr').appendChild(th);
+
+            // Adiciona os valores nas linhas existentes
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                const td = document.createElement('td');
+                td.textContent = values[index] || ''; // Se não houver valor, deixa vazio
+                row.appendChild(td);
+            });
+
+            // Limpa os inputs após adicionar os valores
+            input1.value = '';
+            input2.value = '';
+            input3.value = '';
+        });
     </script>
 
 </body>

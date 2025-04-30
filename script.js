@@ -32,6 +32,7 @@ let tipoCabo = 0;
 let limMax = 0;
 let limMin = 0;
 let tanDeltaMeansByGroup = []; // Array para armazenar os valores de TanDeltaMean por grupo
+let tanDeltaSTDByGroup = []; // Array para armazenar os valores de TanDeltaSTD por grupo
 let tanDeltaCharts = []; // Array para armazenar as instâncias dos gráficos
 let group = 0;
 let fase = '';
@@ -47,6 +48,7 @@ cableGroupsSelect.addEventListener('change', function () {
     uploadSection.innerHTML = ''; // Limpa a seção de upload anterior
     chartsContainer.innerHTML = ''; // Limpa os gráficos anteriores
     tanDeltaMeansByGroup = []; // Reseta os dados do grupo
+    tanDeltaSTDByGroup = [];
     tanDeltaCharts = []; // Reseta os gráficos
 
     for (let i = 0; i < numberOfGroups; i++) {
@@ -56,6 +58,7 @@ cableGroupsSelect.addEventListener('change', function () {
         label.textContent = `Grupo ${i + 1} (${inputsPerGroup} cabos):`;
         groupDiv.appendChild(label);
         tanDeltaMeansByGroup[i] = []; // Inicializa o array para o grupo
+        tanDeltaSTDByGroup[i] = [];
 
         for (let j = 0; j < inputsPerGroup; j++) {
             const fileInput = document.createElement('input');
@@ -97,6 +100,7 @@ function handleFileUpload(groupIndex, event) {
         reader.readAsText(file); // Lê o arquivo como texto
         group++;
         if (group > 3) { group = 1 }
+        
     }
 }
 
@@ -104,7 +108,7 @@ function handleFileUpload(groupIndex, event) {
 function processFile(fileContent, fileName, groupIndex) {
     const lines = fileContent.split('\n');
     let tanDeltaMeans = []; // Array para armazenar os valores de TanDeltaMean
-
+    let tanDeltaSTDs = []
     lines.forEach(line => {
         line = line.trim(); // Remove espaços em branco
         if (line === '') return; // Ignora linhas vazias
@@ -114,10 +118,18 @@ function processFile(fileContent, fileName, groupIndex) {
             const tanDeltaMean = parseFloat(line.split('=')[1].trim());
             tanDeltaMeans.push(tanDeltaMean); // Adiciona o TanDeltaMean ao array
         }
+
+        if (line.startsWith('TanDeltaSTD=')) {
+            const tanDeltaSTD = parseFloat(line.split('=')[1].trim());
+            tanDeltaSTDs.push(tanDeltaSTD); //Adiciona o TanDeltaSTD ao array
+        }
     });
 
     // Armazena os valores de TanDeltaMean para o grupo
-    tanDeltaMeansByGroup[groupIndex].push(...tanDeltaMeans);
+    tanDeltaMeansByGroup[groupIndex].push(tanDeltaMeans);
+
+    // Armazena os valores de TanDeltaSTD para o grupo
+    tanDeltaSTDByGroup[groupIndex].push(tanDeltaSTDs);
 
     // Atualiza o gráfico após cada upload
     updateChart(groupIndex, tanDeltaMeans);
@@ -199,6 +211,7 @@ function updateChart(groupIndex, tanDeltaMeans) {
 
     // Atualiza o gráfico
     tanDeltaCharts[groupIndex].update();
+    tabelaDados();
 }
 
 ///////////////////////////////////////////////////////////////// Relatório ///////////////////////////////////////////////////////////////////
@@ -299,7 +312,6 @@ function cabo() {
         limMin = minEPRTD;
     }
     criarTabela(resultado);
-    tabelaDados();
 }
 // Adiciona um evento de clique ao botão
 document.getElementById('buscarButton').addEventListener('click', function () {
@@ -362,86 +374,26 @@ function criarTabela(resultado) {
 
 }
 function tabelaDados() {
-    const container = document.getElementById('tabela-result');
-    container.innerHTML = '';
-    const tabela = document.createElement('table');
-    const thead = document.createElement('thead');
-    thead.innerHTML = `
-    <tr>
-        <th> </th>
-        <th colspan="2">R</th>
-        <th colspan="2">S</th>
-        <th colspan="2">T</th>
-    </tr>
-    `;
-    tabela.appendChild(thead);
-    container.appendChild(tabela);
+    // Adiciona uma nova coluna ao cabeçalho
+    const th = document.createElement('th');
+    th.textContent = `Coluna ${table.querySelectorAll('th').length}`;
+    table.querySelector('thead tr').appendChild(th);
 
-    const tbody = document.createElement("tbody");
-    tbody.innerHTML = `
-    <tr>
-        <th>MTD(0,5*U0) [E-3]</th>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <th>MTD(1,0*U0) [E-3]</th>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <th>MTD(1,5*U0) [E-3]</th>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <th>Desvio Padrão</th>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <th>Tip Up [E-3]</th>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <th>Tip Up Tip Up [E-3]</th>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    `;
-    tabela.appendChild(tbody)
-}
-function mudarCor() {
-    var cabecalhos = document.querySelectorAll("th");
-    var condicao = document.getElementById("condicao").value;
-
-    // Remove todas as classes de cor dos cabeçalhos
-    cabecalhos.forEach(function (th) {
-        th.classList.remove("normal", "alerta", "critico");
+    // Adiciona os valores nas linhas existentes
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach((row, index) => {
+        const td = document.createElement('td');
+        td.textContent = tanDeltaMeansByGroup[0][index][0] || ''; // Se não houver valor, deixa vazio
+        row.appendChild(td);
     });
 
-    // Adiciona a classe correspondente à condição selecionada
-    if (condicao === "normal") {
-        cabecalhos.forEach(function (th) {
-            th.classList.add("normal");
-        });
-    } else if (condicao === "alerta") {
-        cabecalhos.forEach(function (th) {
-            th.classList.add("alerta");
-        });
-    } else if (condicao === "critico") {
-        cabecalhos.forEach(function (th) {
-            th.classList.add("critico");
-        });
-    }
-}
+    // Limpa os inputs após adicionar os valores
+    input1.value = '';
+    input2.value = '';
+    input3.value = '';
+};
+
+
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
 document.getElementById('salvar-pdf').addEventListener('click', function () {
     const tag1 = document.getElementById('tag').value;
