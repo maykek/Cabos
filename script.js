@@ -100,7 +100,7 @@ function handleFileUpload(groupIndex, event) {
         reader.readAsText(file); // Lê o arquivo como texto
         group++;
         if (group > 3) { group = 1 }
-        
+
     }
 }
 
@@ -374,25 +374,27 @@ function criarTabela(resultado) {
 
 }
 function tabelaDados() {
-    // Adiciona uma nova coluna ao cabeçalho
-    const th = document.createElement('th');
-    th.textContent = `Coluna ${table.querySelectorAll('th').length}`;
-    table.querySelector('thead tr').appendChild(th);
-
-    // Adiciona os valores nas linhas existentes
-    const rows = table.querySelectorAll('tbody tr');
-    rows.forEach((row, index) => {
-        const td = document.createElement('td');
-        td.textContent = tanDeltaMeansByGroup[0][index][0] || ''; // Se não houver valor, deixa vazio
-        row.appendChild(td);
-    });
-
-    // Limpa os inputs após adicionar os valores
-    input1.value = '';
-    input2.value = '';
-    input3.value = '';
-};
-
+    const container = document.getElementById('tabela-result');
+    const table = document.createElement('table');
+    const tbody = document.createElement('tbody');
+    let i = 0;
+    tanDeltaMeansByGroup.forEach((element) => {
+        tbody.innerHTML = `
+    <tr>
+        <td>${element}</td>
+    </tr>
+    <tr>
+        <td>${element}</td>
+    </tr>
+    <tr>
+        <td>${element}</td>
+    </tr>
+    `;
+    })
+    table.appendChild(tbody);
+    container.appendChild(table);
+    console.log(tanDeltaMeansByGroup)
+}
 
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
 document.getElementById('salvar-pdf').addEventListener('click', function () {
