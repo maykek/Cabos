@@ -147,6 +147,7 @@ tipoCaboSelect.addEventListener('change', function () {
         limMax = maxXLPETD;
         limMin = minXLPETD;
     }
+    
 })
 
 
@@ -212,6 +213,7 @@ function updateChart(groupIndex, tanDeltaMeans) {
     // Atualiza o gráfico
     tanDeltaCharts[groupIndex].update();
     tabelaDados();
+    
 }
 
 ///////////////////////////////////////////////////////////////// Relatório ///////////////////////////////////////////////////////////////////
@@ -374,26 +376,17 @@ function criarTabela(resultado) {
 
 }
 function tabelaDados() {
-    const container = document.getElementById('tabela-result');
-    const table = document.createElement('table');
-    const tbody = document.createElement('tbody');
-    let i = 0;
-    tanDeltaMeansByGroup.forEach((element) => {
-        tbody.innerHTML = `
-    <tr>
-        <td>${element}</td>
-    </tr>
-    <tr>
-        <td>${element}</td>
-    </tr>
-    <tr>
-        <td>${element}</td>
-    </tr>
-    `;
-    })
-    table.appendChild(tbody);
-    container.appendChild(table);
-    console.log(tanDeltaMeansByGroup)
+    const dadofase0 = document.getElementById('dadoFase0');
+    const dadofase1 = document.getElementById('dadoFase1');
+    const dadofase2 = document.getElementById('dadoFase2');
+    
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            console.log('fase: ',tanDeltaMeansByGroup[i][j])
+        }
+    }
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
