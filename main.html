@@ -101,7 +101,7 @@
 
         #buscarButton {
             padding: 10px;
-            width: 300px;
+            width: 100%;
             margin-top: 10px;
             background-color: #f000;
         }
@@ -160,7 +160,6 @@
                         <label for="horns">VLF</label>
                     </div>
                 </fieldset>
-                <button id="buscarButton">Buscar</button>
             </div>
         </div>
         <div id="isolante" style="display: none;">
@@ -172,24 +171,31 @@
             </select>
         </div>
         <div id="upload">
-            <label for="cableGroups" style="margin-bottom: 15px;">Selecione o número de grupos de cabos:</label>
-            <select id="cableGroups">
-                <option value="0">Selecione</option>
-                <option value="1">1 grupo (3 cabos)</option>
-                <option value="2">2 grupos (6 cabos)</option>
-                <option value="3">3 grupos (9 cabos)</option>
-                <option value="4">4 grupos (12 cabos)</option>
-                <option value="5">5 grupos (15 cabos)</option>
-                <option value="6">6 grupos (18 cabos)</option>
-            </select>
+            <fieldset>
+                <legend for="cableGroups" style="margin-bottom: 15px;">Selecione o número de grupos de cabos:</legend>
+                <select id="cableGroups">
+                    <option value="0">Selecione</option>
+                    <option value="1">1 grupo (3 cabos)</option>
+                    <option value="2">2 grupos (6 cabos)</option>
+                    <option value="3">3 grupos (9 cabos)</option>
+                    <option value="4">4 grupos (12 cabos)</option>
+                    <option value="5">5 grupos (15 cabos)</option>
+                    <option value="6">6 grupos (18 cabos)</option>
+                </select>
+             </fieldset>
             <div id="uploadSection" style="display: flex; flex-direction: row; padding: 15px;"></div>
-            <label for="condicao">Selecione a condição:</label>
-            <select id="condicao" onchange="mudarCor()">
-                <option value="0">Selecione</option>
-                <option value="normal">Normal</option>
-                <option value="alerta">Alerta</option>
-                <option value="critico">Crítico</option>
-            </select>
+            <fieldset>
+            <legend for="condicao">Selecione a condição:</legend>
+                <select id="condicao" onchange="mudarCor()">
+                    <option value="0">Selecione</option>
+                    <option value="normal">Normal</option>
+                    <option value="alerta">Alerta</option>
+                    <option value="critico">Crítico</option>
+                </select>
+            </fieldset>
+            <div>
+                <button id="buscarButton">Gerar Relatório</button>
+            </div>
         </div>
     </div>
     <div id="resultDisplay"></div>
@@ -201,28 +207,8 @@
         <div style="display: flex; flex-direction: row;">
             <div style="display: flex; flex-direction: column; width: 800px; border: #000 1px solid;"
                 id="chartsContainer"></div>
-            <div id="tabela-result" style="width: 100%;">
-                <table id="myTable">
-                    <thead>
-                        <tr>
-                            <th>Valores</th>
-                            <th>R</th>
-                            <th>S</th>
-                            <th>T</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="dadoFase0">
-                            <th>MTD (0,5*U0) [E-3]</td>
-                        </tr>
-                        <tr id="dadoFase1">
-                            <th>MTD (1,0*U0) [E-3]</td>
-                        </tr>
-                        <tr id="dadoFase2">
-                            <th>MTD (1,5*U0) [E-3]</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="tanDeltaDataDisplay" style="width: 100%;">
+
             </div>
         </div>
     </div>

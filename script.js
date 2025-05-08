@@ -2,6 +2,7 @@ const cableGroupsSelect = document.getElementById('cableGroups');
 const uploadSection = document.getElementById('uploadSection');
 const chartsContainer = document.getElementById('chartsContainer');
 const tipoCaboSelect = document.getElementById('tipoCabo');
+const tanDeltaDataDisplay = document.getElementById('tanDeltaDataDisplay');
 const inputsPerGroup = 3; // Define quantos inputs de upload por grupo
 const maxEPRTD = 75;
 const minEPRTD = 16;
@@ -24,7 +25,6 @@ const dia = date.getDate();
 const mes = date.getMonth() + 1; // Adiciona 1, pois os meses começam em 0
 const ano = date.getFullYear();
 const Data = `${dia}-${mes}-${ano}`;
-
 
 let tagCad = null;
 let tag = null;
@@ -147,7 +147,7 @@ tipoCaboSelect.addEventListener('change', function () {
         limMax = maxXLPETD;
         limMin = minXLPETD;
     }
-    
+
 })
 
 
@@ -213,7 +213,7 @@ function updateChart(groupIndex, tanDeltaMeans) {
     // Atualiza o gráfico
     tanDeltaCharts[groupIndex].update();
     tabelaDados();
-    
+
 }
 
 ///////////////////////////////////////////////////////////////// Relatório ///////////////////////////////////////////////////////////////////
@@ -376,16 +376,44 @@ function criarTabela(resultado) {
 
 }
 function tabelaDados() {
-    const dadofase0 = document.getElementById('dadoFase0');
-    const dadofase1 = document.getElementById('dadoFase1');
-    const dadofase2 = document.getElementById('dadoFase2');
-    
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            console.log('fase: ',tanDeltaMeansByGroup[i][j])
-        }
+    // Limpa display anterior
+    tanDeltaDataDisplay.innerHTML = '';
+    if (tanDeltaMeansByGroup.length === 0) {
+        tanDeltaDataDisplay.textContent = 'Nenhum dado de TanDelta carregado ainda.';
+        return;
     }
-
+    const container = document.createElement('div');
+    container.style.marginTop = '1rem';
+    tanDeltaMeansByGroup.forEach((groupData, groupIndex) => {
+        const groupTitle = document.createElement('h3');
+        groupTitle.textContent = `Grupo ${groupIndex + 1}`;
+        container.appendChild(groupTitle);
+        if (groupData.length === 0) {
+            const noData = document.createElement('p');
+            noData.textContent = 'Sem dados para este grupo.';
+            container.appendChild(noData);
+            return;
+        }
+        // Cria tabela por grupo
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        thead.innerHTML = '<tr><th>Upload #</th><th>TanDeltaMeans</th></tr>';
+        table.appendChild(thead);
+        const tbody = document.createElement('tbody');
+        groupData.forEach((tanDeltaArray, idx) => {
+            const tr = document.createElement('tr');
+            const tdIndex = document.createElement('td');
+            tdIndex.textContent = idx + 1;
+            const tdValues = document.createElement('td');
+            tdValues.textContent = tanDeltaArray.join(', ');
+            tr.appendChild(tdIndex);
+            tr.appendChild(tdValues);
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        container.appendChild(table);
+    });
+    tanDeltaDataDisplay.appendChild(container);
 
 }
 
