@@ -26,6 +26,8 @@ const mes = date.getMonth() + 1; // Adiciona 1, pois os meses começam em 0
 const ano = date.getFullYear();
 const Data = `${dia}-${mes}-${ano}`;
 
+let tipUpByGroup = [];
+let tipUpTipUpByGroup = [];
 let tagCad = null;
 let tag = null;
 let tipoCabo = 0;
@@ -48,7 +50,9 @@ cableGroupsSelect.addEventListener('change', function () {
     uploadSection.innerHTML = ''; // Limpa a seção de upload anterior
     chartsContainer.innerHTML = ''; // Limpa os gráficos anteriores
     tanDeltaMeansByGroup = []; // Reseta os dados do grupo
-    tanDeltaSTDByGroup = [];
+    tanDeltaSTDByGroup = []; // Reseta os dados do grupo
+    tipUpTipUpByGroup = []; // Reseta os dados do grupo
+    tipUpByGroup = []; // Reseta os dados do grupo
     tanDeltaCharts = []; // Reseta os gráficos
 
     for (let i = 0; i < numberOfGroups; i++) {
@@ -59,6 +63,8 @@ cableGroupsSelect.addEventListener('change', function () {
         groupDiv.appendChild(label);
         tanDeltaMeansByGroup[i] = []; // Inicializa o array para o grupo
         tanDeltaSTDByGroup[i] = [];
+        tipUpTipUpByGroup[i] = [];
+        tipUpByGroup[i] = [];
 
         for (let j = 0; j < inputsPerGroup; j++) {
             const fileInput = document.createElement('input');
@@ -108,7 +114,11 @@ function handleFileUpload(groupIndex, event) {
 function processFile(fileContent, fileName, groupIndex) {
     const lines = fileContent.split('\n');
     let tanDeltaMeans = []; // Array para armazenar os valores de TanDeltaMean
-    let tanDeltaSTDs = []
+    let tanDeltaSTDs = [];
+    let tipUp = [];
+    let tipUpTipUp = [];
+    let tp = [];
+    let tptp = [];
     lines.forEach(line => {
         line = line.trim(); // Remove espaços em branco
         if (line === '') return; // Ignora linhas vazias
@@ -120,16 +130,28 @@ function processFile(fileContent, fileName, groupIndex) {
         }
 
         if (line.startsWith('TanDeltaSTD=')) {
-            const tanDeltaSTD = parseFloat(line.split('=')[1].trim());
+            const STD = parseFloat(line.split('=')[1].trim());
+            const tanDeltaSTD = STD.toFixed(4);
             tanDeltaSTDs.push(tanDeltaSTD); //Adiciona o TanDeltaSTD ao array
         }
+       tp = (tanDeltaMeans[2] - tanDeltaMeans[0]).toFixed(4)
+       tptp = ((tanDeltaMeans[2] - tanDeltaMeans[1]) - (tanDeltaMeans[1] - tanDeltaMeans[0])).toFixed(4);
     });
+
+    tipUp.push(tp);
+    tipUpTipUp.push(tptp);
 
     // Armazena os valores de TanDeltaMean para o grupo
     tanDeltaMeansByGroup[groupIndex].push(tanDeltaMeans);
 
     // Armazena os valores de TanDeltaSTD para o grupo
-    tanDeltaSTDByGroup[groupIndex].push(tanDeltaSTDs);
+    tanDeltaSTDByGroup[groupIndex].push(Math.max(...tanDeltaSTDs));
+
+    // Armazena os valores de Tip-Up para o grupo
+    tipUpByGroup[groupIndex].push(tipUp);
+
+    // Armazena os valores de Tip-Up Tip-Up para o grupo
+    tipUpTipUpByGroup[groupIndex].push(tipUpTipUp);
 
     // Atualiza o gráfico após cada upload
     updateChart(groupIndex, tanDeltaMeans);
@@ -266,14 +288,6 @@ function buscarCodigo(codigoBuscado) {
             // Exibe o resultado
             if (resultado) {
                 isol1 = resultado.matIsol;
-                console.log("Código encontrado: ", resultado.codigo);
-                console.log("Descrição: ", resultado.descricao);
-                console.log("Sala: ", resultado.sala);
-                console.log("Destino: ", destino);
-                console.log("CAE: ", resultado.CAE);
-                console.log("Equipamento: ", resultado.equipamento);
-                console.log("Tag: ", resultado.Tag);
-                console.log('islo1: ', isol1);
                 if (isol1 == '') {
                     document.getElementById('isolante').style.display = 'block';
                     if (tipoCabo == 1) {
@@ -377,45 +391,169 @@ function criarTabela(resultado) {
 }
 function tabelaDados() {
     // Limpa display anterior
+    const tanDeltaDataDisplay = document.getElementById('tanDeltaDataDisplay');
     tanDeltaDataDisplay.innerHTML = '';
     if (tanDeltaMeansByGroup.length === 0) {
         tanDeltaDataDisplay.textContent = 'Nenhum dado de TanDelta carregado ainda.';
         return;
     }
+
     const container = document.createElement('div');
     container.style.marginTop = '1rem';
+
     tanDeltaMeansByGroup.forEach((groupData, groupIndex) => {
         const groupTitle = document.createElement('h3');
         groupTitle.textContent = `Grupo ${groupIndex + 1}`;
         container.appendChild(groupTitle);
+
         if (groupData.length === 0) {
             const noData = document.createElement('p');
             noData.textContent = 'Sem dados para este grupo.';
             container.appendChild(noData);
             return;
         }
-        // Cria tabela por grupo
+
+        // Determina o comprimento máximo dos arrays tanDeltaMeans em uploads (linhas)
+        let maxLength = 0;
+        groupData.forEach(tanDeltaArray => {
+            if (tanDeltaArray.length > maxLength) maxLength = tanDeltaArray.length;
+        });
+
+        // Cria a tabela
         const table = document.createElement('table');
         const thead = document.createElement('thead');
-        thead.innerHTML = '<tr><th>Upload #</th><th>TanDeltaMeans</th></tr>';
-        table.appendChild(thead);
-        const tbody = document.createElement('tbody');
-        groupData.forEach((tanDeltaArray, idx) => {
-            const tr = document.createElement('tr');
-            const tdIndex = document.createElement('td');
-            tdIndex.textContent = idx + 1;
-            const tdValues = document.createElement('td');
-            tdValues.textContent = tanDeltaArray.join(', ');
-            tr.appendChild(tdIndex);
-            tr.appendChild(tdValues);
-            tbody.appendChild(tr);
+        const trHead = document.createElement('tr');
+
+        // Primeira célula de cabeçalho vazia no canto superior esquerdo
+        const thEmpty = document.createElement('th');
+        thEmpty.textContent = 'Índice';
+        trHead.appendChild(thEmpty);
+
+        // Cria cabeçalho para cada upload
+        groupData.forEach((_, uploadIndex) => {
+            const fase = uploadIndex + 1;
+            let cabo = '';
+            const th = document.createElement('th');
+            if (fase == 1) {
+                cabo = 'R';
+            }
+            if (fase == 2) {
+                cabo = 'S';
+            }
+            if (fase == 3) {
+                cabo = 'T';
+            }
+            th.textContent = `${cabo}`;
+            trHead.appendChild(th);
         });
+        thead.appendChild(trHead);
+        table.appendChild(thead);
+
+        thead.appendChild(trHead);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+
+        // Linha para os valores de tanDeltaMeans
+        for (let rowIndex = 0; rowIndex < maxLength; rowIndex++) {
+            const tr = document.createElement('tr');
+
+            const tdIndexText = rowIndex + 1
+            const tdIndex = document.createElement('td');
+
+            if (tdIndexText == 1) {
+                tdIndex.textContent = 'MTD (0,5*U0) [E-3]';
+            }
+            if (tdIndexText == 2) {
+                tdIndex.textContent = 'MTD (1,0*U0) [E-3]';
+            }
+            if (tdIndexText == 3) {
+                tdIndex.textContent = 'MTD (1,5*U0) [E-3]';
+            }
+            tdIndex.style.backgroundColor = '#f2f2f2';
+            tdIndex.style.fontWeight = 'bold';
+            tr.appendChild(tdIndex);
+
+            // Média de valores das colunas por upload
+            groupData.forEach((tanDeltaMeans, uploadIndex) => {
+                const td = document.createElement('td');
+                td.textContent = (rowIndex < tanDeltaMeans.length) ? tanDeltaMeans[rowIndex].toFixed(4) : '';
+                td.style.border = '1px #000 solid';
+                tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+        }
+
+        // Última linha para os valores de tanDeltaSTD
+        const trSTD = document.createElement('tr');
+
+        // Label cell
+        const tdLabel = document.createElement('td');
+        tdLabel.textContent = 'Desvio Padrão';
+        tdLabel.style.fontWeight = 'bold';
+        tdLabel.style.backgroundColor = '#f2f2f2';
+        trSTD.appendChild(tdLabel);
+
+        // Células de valores STD por upload
+        const stdsForGroup = tanDeltaSTDByGroup[groupIndex] || [];
+        groupData.forEach((_, uploadIndex) => {
+            const tdStd = document.createElement('td');
+            tdStd.textContent = (uploadIndex < stdsForGroup.length) ? stdsForGroup[uploadIndex].toFixed(4) : '';
+            tdStd.style.border = '1px #000 solid';
+            trSTD.appendChild(tdStd);
+        });
+        tbody.appendChild(trSTD);
+
+        // Última linha para os valores de tipUp
+        const trTipUp = document.createElement('tr');
+
+        // Label cell
+        const tdTp = document.createElement('td');
+        tdTp.textContent = 'Tip Up [E-3]';
+        tdTp.style.fontWeight = 'bold';
+        tdTp.style.backgroundColor = '#f2f2f2';
+        trTipUp.appendChild(tdTp);
+
+        // Células de valores STD por upload
+        const tipUpForGroup = tipUpByGroup[groupIndex] || [];
+        groupData.forEach((_, uploadIndex) => {
+            const tdtipup = document.createElement('td');
+            tdtipup.textContent = (uploadIndex < tipUpForGroup.length) ? tipUpForGroup[uploadIndex] : '';
+            tdtipup.style.border = '1px #000 solid';
+            trTipUp.appendChild(tdtipup);
+        });
+        tbody.appendChild(trTipUp);
+//*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Última linha para os valores de tipUp
+        const trTipUpTipUp = document.createElement('tr');
+
+        // Label cell
+        const tdTpTp = document.createElement('td');
+        tdTpTp.textContent = 'Tip Up [E-3]';
+        tdTpTp.style.fontWeight = 'bold';
+        tdTpTp.style.backgroundColor = '#f2f2f2';
+        trTipUpTipUp.appendChild(tdTpTp);
+
+        // Células de valores STD por upload
+        const tipUpTipUpForGroup = tipUpTipUpByGroup[groupIndex] || [];
+        groupData.forEach((_, uploadIndex) => {
+            const tdtptp = document.createElement('td');
+            tdtptp.textContent = (uploadIndex < tipUpTipUpForGroup.length) ? tipUpTipUpForGroup[uploadIndex] : '';
+            tdtptp.style.border = '1px #000 solid';
+            trTipUpTipUp.appendChild(tdtptp);
+        });
+        tbody.appendChild(trTipUpTipUp);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         table.appendChild(tbody);
         container.appendChild(table);
     });
+    console.log(tipUpByGroup);
     tanDeltaDataDisplay.appendChild(container);
-
 }
+
+// Para teste, mostre a tabela ao carregar com dados de exemplo.
+tabelaDados();
 
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
 document.getElementById('salvar-pdf').addEventListener('click', function () {

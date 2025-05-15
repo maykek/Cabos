@@ -1,78 +1,155 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabela com Inputs</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tan Delta Viewer - Means and STD Per Group</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 1rem;
+  }
+  #tanDeltaDataDisplay table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  #tanDeltaDataDisplay th, #tanDeltaDataDisplay td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+  }
+  #tanDeltaDataDisplay thead {
+    background-color: #f2f2f2;
+  }
+  #tanDeltaDataDisplay th.upload-header {
+    background-color: #d9e8f5;
+  }
+</style>
 </head>
 <body>
 
-    <h1>Tabela Dinâmica com Inputs</h1>
-    <input type="text" id="input1" placeholder="Valor 1">
-    <input type="text" id="input2" placeholder="Valor 2">
-    <input type="text" id="input3" placeholder="Valor 3">
-    <button id="addValues">Adicionar Valores</button>
+<div id="tanDeltaDataDisplay"></div>
 
-    <table id="myTable">
-        <thead>
-            <tr>
-                <th>Valores</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
+<script>
+/**
+ * Example global data arrays. 
+ * - tanDeltaMeansByGroup[groupIndex][uploadIndex] = array of values
+ * - tanDeltaSTDByGroup[groupIndex] = array of STD values corresponding one per upload in group
+ */
+let tanDeltaMeansByGroup = [
+  [ [0.12, 0.15, 0.18], [0.14, 0.16, 0.20] ],
+  [ [0.22, 0.25], [0.20, 0.23], [0.21, 0.26, 0.28] ]
+];
+let tanDeltaSTDByGroup = [
+  [0.01, 0.02],      // group 0 STD per upload
+  [0.03, 0.02, 0.025] // group 1 STD per upload
+];
 
-    <script>
-        const addValuesButton = document.getElementById('addValues');
-        const table = document.getElementById('myTable');
-        const input1 = document.getElementById('input1');
-        const input2 = document.getElementById('input2');
-        const input3 = document.getElementById('input3');
+function tabelaDados() {
+    // Limpa display anterior
+    const tanDeltaDataDisplay = document.getElementById('tanDeltaDataDisplay');
+    tanDeltaDataDisplay.innerHTML = '';
+    if (tanDeltaMeansByGroup.length === 0) {
+        tanDeltaDataDisplay.textContent = 'Nenhum dado de TanDelta carregado ainda.';
+        return;
+    }
 
-        addValuesButton.addEventListener('click', () => {
-            const values = [input1.value, input2.value, input3.value];
+    const container = document.createElement('div');
+    container.style.marginTop = '1rem';
 
-            // Adiciona uma nova coluna ao cabeçalho
+    tanDeltaMeansByGroup.forEach((groupData, groupIndex) => {
+        const groupTitle = document.createElement('h3');
+        groupTitle.textContent = `Grupo ${groupIndex + 1}`;
+        container.appendChild(groupTitle);
+
+        if (groupData.length === 0) {
+            const noData = document.createElement('p');
+            noData.textContent = 'Sem dados para este grupo.';
+            container.appendChild(noData);
+            return;
+        }
+
+        // Determine max length of tanDeltaMeans arrays across uploads (rows)
+        let maxLength = 0;
+        groupData.forEach(tanDeltaArray => {
+            if (tanDeltaArray.length > maxLength) maxLength = tanDeltaArray.length;
+        });
+
+        // Create table
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const trHead = document.createElement('tr');
+
+        // First empty header cell at top-left corner
+        const thEmpty = document.createElement('th');
+        thEmpty.textContent = 'Índice';
+        trHead.appendChild(thEmpty);
+
+        // Create headers for each upload
+        groupData.forEach((_, uploadIndex) => {
             const th = document.createElement('th');
-            th.textContent = `Coluna ${table.querySelectorAll('th').length}`;
-            table.querySelector('thead tr').appendChild(th);
+            th.textContent = `Upload ${uploadIndex + 1}`;
+            th.classList.add('upload-header');
+            trHead.appendChild(th);
+        });
 
-            // Adiciona os valores nas linhas existentes
-            const rows = table.querySelectorAll('tbody tr');
-            rows.forEach((row, index) => {
+        thead.appendChild(trHead);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+
+        // Rows for tanDeltaMeans values
+        for (let rowIndex = 0; rowIndex < maxLength; rowIndex++) {
+            const tr = document.createElement('tr');
+
+            // Index column
+            const tdIndex = document.createElement('td');
+            tdIndex.textContent = rowIndex + 1;
+            tr.appendChild(tdIndex);
+
+            // Mean value columns per upload
+            groupData.forEach((tanDeltaMeans, uploadIndex) => {
                 const td = document.createElement('td');
-                td.textContent = values[index] || ''; // Se não houver valor, deixa vazio
-                row.appendChild(td);
+                td.textContent = (rowIndex < tanDeltaMeans.length) ? tanDeltaMeans[rowIndex].toFixed(5) : '';
+                tr.appendChild(td);
             });
 
-            // Limpa os inputs após adicionar os valores
-            input1.value = '';
-            input2.value = '';
-            input3.value = '';
+            tbody.appendChild(tr);
+        }
+
+        // Last row for tanDeltaSTD values
+        const trSTD = document.createElement('tr');
+
+        // Label cell
+        const tdLabel = document.createElement('td');
+        tdLabel.textContent = 'TanDeltaSTD';
+        tdLabel.style.fontWeight = 'bold';
+        trSTD.appendChild(tdLabel);
+
+        // STD values cells per upload
+        const stdsForGroup = tanDeltaSTDByGroup[groupIndex] || [];
+        groupData.forEach((_, uploadIndex) => {
+            const tdStd = document.createElement('td');
+            tdStd.textContent = (uploadIndex < stdsForGroup.length) ? stdsForGroup[uploadIndex].toFixed(5) : '';
+            tdStd.style.fontWeight = 'bold';
+            trSTD.appendChild(tdStd);
         });
-    </script>
+
+        tbody.appendChild(trSTD);
+
+        table.appendChild(tbody);
+        container.appendChild(table);
+    });
+
+    tanDeltaDataDisplay.appendChild(container);
+}
+
+// For testing show the table on load with example data
+tabelaDados();
+
+</script>
 
 </body>
 </html>
+
