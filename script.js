@@ -45,54 +45,61 @@ let destino = null;
 let isol = '';
 let isol1 = null;
 
-cableGroupsSelect.addEventListener('change', function () {
-    const numberOfGroups = parseInt(this.value); // Aqui é onde numberOfGroups é declarado
-    uploadSection.innerHTML = ''; // Limpa a seção de upload anterior
-    chartsContainer.innerHTML = ''; // Limpa os gráficos anteriores
-    tanDeltaMeansByGroup = []; // Reseta os dados do grupo
-    tanDeltaSTDByGroup = []; // Reseta os dados do grupo
-    tipUpTipUpByGroup = []; // Reseta os dados do grupo
-    tipUpByGroup = []; // Reseta os dados do grupo
-    tanDeltaCharts = []; // Reseta os gráficos
+const td = document.getElementById("TD");
+td.addEventListener("change", function () {
+    if (td.checked) {
+        document.getElementById('upload').style.display = 'block';
+        cableGroupsSelect.addEventListener('change', function () {
+            const numberOfGroups = parseInt(this.value); // Aqui é onde numberOfGroups é declarado
+            uploadSection.innerHTML = ''; // Limpa a seção de upload anterior
+            chartsContainer.innerHTML = ''; // Limpa os gráficos anteriores
+            tanDeltaMeansByGroup = []; // Reseta os dados do grupo
+            tanDeltaSTDByGroup = []; // Reseta os dados do grupo
+            tipUpTipUpByGroup = []; // Reseta os dados do grupo
+            tipUpByGroup = []; // Reseta os dados do grupo
+            tanDeltaCharts = []; // Reseta os gráficos
 
-    for (let i = 0; i < numberOfGroups; i++) {
-        const groupDiv = document.createElement('div');
-        groupDiv.classList.add('group');
-        const label = document.createElement('label');
-        label.textContent = `Grupo ${i + 1} (${inputsPerGroup} cabos):`;
-        groupDiv.appendChild(label);
-        tanDeltaMeansByGroup[i] = []; // Inicializa o array para o grupo
-        tanDeltaSTDByGroup[i] = [];
-        tipUpTipUpByGroup[i] = [];
-        tipUpByGroup[i] = [];
+            for (let i = 0; i < numberOfGroups; i++) {
+                const groupDiv = document.createElement('div');
+                groupDiv.classList.add('group');
+                const label = document.createElement('label');
+                label.textContent = `Grupo ${i + 1} (${inputsPerGroup} cabos):`;
+                groupDiv.appendChild(label);
+                tanDeltaMeansByGroup[i] = []; // Inicializa o array para o grupo
+                tanDeltaSTDByGroup[i] = [];
+                tipUpTipUpByGroup[i] = [];
+                tipUpByGroup[i] = [];
 
-        for (let j = 0; j < inputsPerGroup; j++) {
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = '.'; // Tipos de arquivos permitidos
-            fileInput.id = `group-${i + 1}-cable-${j + 1}`;
-            fileInput.addEventListener('change', handleFileUpload.bind(null, i)); // Passa o índice do grupo corretamente
-            groupDiv.appendChild(fileInput);
+                for (let j = 0; j < inputsPerGroup; j++) {
+                    const fileInput = document.createElement('input');
+                    fileInput.type = 'file';
+                    fileInput.accept = '.'; // Tipos de arquivos permitidos
+                    fileInput.id = `group-${i + 1}-cable-${j + 1}`;
+                    fileInput.addEventListener('change', handleFileUpload.bind(null, i)); // Passa o índice do grupo corretamente
+                    groupDiv.appendChild(fileInput);
 
-            // Adiciona um input de texto para o grupo
-            const textInput = document.createElement('input');
-            textInput.type = 'text';
-            textInput.placeholder = `Nome do Grupo ${i + 1}`;
-            groupDiv.appendChild(textInput);
-            textInput.id = `group-${i + 1}-cable-${j + 1}-${fase}`;
-            irTag = textInput.id;
+                    // Adiciona um input de texto para o grupo
+                    const textInput = document.createElement('input');
+                    textInput.type = 'text';
+                    textInput.placeholder = `Nome do Grupo ${i + 1}`;
+                    groupDiv.appendChild(textInput);
+                    textInput.id = `group-${i + 1}-cable-${j + 1}-${fase}`;
+                    irTag = textInput.id;
 
-        }
+                }
 
-        uploadSection.appendChild(groupDiv);
+                uploadSection.appendChild(groupDiv);
 
-        // Cria um canvas para o gráfico do grupo
-        const canvas = document.createElement('canvas');
-        canvas.id = `tanDeltaChart-${i}`; // ID único para cada gráfico
-        chartsContainer.appendChild(canvas);
+                // Cria um canvas para o gráfico do grupo
+                const canvas = document.createElement('canvas');
+                canvas.id = `tanDeltaChart-${i}`; // ID único para cada gráfico
+                chartsContainer.appendChild(canvas);
+            }
+        });
+    } else {
+        document.getElementById('upload').style.display = 'none';
     }
-});
-
+})
 // Função para lidar com o upload de arquivos
 function handleFileUpload(groupIndex, event) {
     const files = event.target.files; // Obtém todos os arquivos selecionados
@@ -134,8 +141,8 @@ function processFile(fileContent, fileName, groupIndex) {
             const tanDeltaSTD = STD.toFixed(4);
             tanDeltaSTDs.push(tanDeltaSTD); //Adiciona o TanDeltaSTD ao array
         }
-       tp = (tanDeltaMeans[2] - tanDeltaMeans[0]).toFixed(4)
-       tptp = ((tanDeltaMeans[2] - tanDeltaMeans[1]) - (tanDeltaMeans[1] - tanDeltaMeans[0])).toFixed(4);
+        tp = (tanDeltaMeans[2] - tanDeltaMeans[0]).toFixed(4)
+        tptp = ((tanDeltaMeans[2] - tanDeltaMeans[1]) - (tanDeltaMeans[1] - tanDeltaMeans[0])).toFixed(4);
     });
 
     tipUp.push(tp);
@@ -301,7 +308,11 @@ function buscarCodigo(codigoBuscado) {
                 // Chama a função para criar a tabela com o resultado
 
             } else {
-                console.log("Código não encontrado.");
+                //console.log("Código não encontrado.");
+                //window.alert('Código não encontrado.')
+                if (window.confirm("Código não encontrado. Deseja Cadastrar?")) {
+                    window.open("relatório.html");
+                }
             }
             if (resultado.Tag == '') {
                 const tag1 = document.getElementById('tag').value;
@@ -331,6 +342,7 @@ function cabo() {
 }
 // Adiciona um evento de clique ao botão
 document.getElementById('buscarButton').addEventListener('click', function () {
+    resultado = null;
     const codigoBuscado = document.getElementById('codigoInput').value; // Lê o valor do input
     buscarCodigo(codigoBuscado); // Chama a função de busca com o valor do input
 });
@@ -524,8 +536,8 @@ function tabelaDados() {
             trTipUp.appendChild(tdtipup);
         });
         tbody.appendChild(trTipUp);
-//*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Última linha para os valores de tipUp
+        //*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Última linha para os valores de tipUp
         const trTipUpTipUp = document.createElement('tr');
 
         // Label cell
@@ -544,7 +556,7 @@ function tabelaDados() {
             trTipUpTipUp.appendChild(tdtptp);
         });
         tbody.appendChild(trTipUpTipUp);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         table.appendChild(tbody);
         container.appendChild(table);
     });
@@ -553,7 +565,16 @@ function tabelaDados() {
 }
 
 // Para teste, mostre a tabela ao carregar com dados de exemplo.
-tabelaDados();
+//tabelaDados();
+///////////////////////////////////////////////////////////////* TESTE VLF */////////////////////////////////////////////////////////////
+const vlf = document.getElementById("VLF");
+vlf.addEventListener("change", function () {
+    if (vlf.checked) {
+        document.getElementById('VLFTest').style.display = 'block';
+        
+    } else { document.getElementById('VLFTest').style.display = 'none'; }
+})
+
 
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
 document.getElementById('salvar-pdf').addEventListener('click', function () {

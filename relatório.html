@@ -1,155 +1,133 @@
+/* Estilos Gerais */
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Tan Delta Viewer - Means and STD Per Group</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 1rem;
-  }
-  #tanDeltaDataDisplay table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-  #tanDeltaDataDisplay th, #tanDeltaDataDisplay td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-  }
-  #tanDeltaDataDisplay thead {
-    background-color: #f2f2f2;
-  }
-  #tanDeltaDataDisplay th.upload-header {
-    background-color: #d9e8f5;
-  }
-</style>
-</head>
-<body>
-
-<div id="tanDeltaDataDisplay"></div>
-
-<script>
-/**
- * Example global data arrays. 
- * - tanDeltaMeansByGroup[groupIndex][uploadIndex] = array of values
- * - tanDeltaSTDByGroup[groupIndex] = array of STD values corresponding one per upload in group
- */
-let tanDeltaMeansByGroup = [
-  [ [0.12, 0.15, 0.18], [0.14, 0.16, 0.20] ],
-  [ [0.22, 0.25], [0.20, 0.23], [0.21, 0.26, 0.28] ]
-];
-let tanDeltaSTDByGroup = [
-  [0.01, 0.02],      // group 0 STD per upload
-  [0.03, 0.02, 0.025] // group 1 STD per upload
-];
-
-function tabelaDados() {
-    // Limpa display anterior
-    const tanDeltaDataDisplay = document.getElementById('tanDeltaDataDisplay');
-    tanDeltaDataDisplay.innerHTML = '';
-    if (tanDeltaMeansByGroup.length === 0) {
-        tanDeltaDataDisplay.textContent = 'Nenhum dado de TanDelta carregado ainda.';
-        return;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Relatório de Diagnóstico</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
     }
 
-    const container = document.createElement('div');
-    container.style.marginTop = '1rem';
+    h1,
+    h2,
+    h3 {
+      color: #333;
+    }
 
-    tanDeltaMeansByGroup.forEach((groupData, groupIndex) => {
-        const groupTitle = document.createElement('h3');
-        groupTitle.textContent = `Grupo ${groupIndex + 1}`;
-        container.appendChild(groupTitle);
+    h1 {
+      text-align: center;
+    }
 
-        if (groupData.length === 0) {
-            const noData = document.createElement('p');
-            noData.textContent = 'Sem dados para este grupo.';
-            container.appendChild(noData);
-            return;
-        }
+    /* Tabela Principal */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
 
-        // Determine max length of tanDeltaMeans arrays across uploads (rows)
-        let maxLength = 0;
-        groupData.forEach(tanDeltaArray => {
-            if (tanDeltaArray.length > maxLength) maxLength = tanDeltaArray.length;
-        });
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
 
-        // Create table
-        const table = document.createElement('table');
-        const thead = document.createElement('thead');
-        const trHead = document.createElement('tr');
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
 
-        // First empty header cell at top-left corner
-        const thEmpty = document.createElement('th');
-        thEmpty.textContent = 'Índice';
-        trHead.appendChild(thEmpty);
+    /* Títulos dentro da Tabela */
+    .titulo {
+      background-color: #e7e7e7;
+    }
 
-        // Create headers for each upload
-        groupData.forEach((_, uploadIndex) => {
-            const th = document.createElement('th');
-            th.textContent = `Upload ${uploadIndex + 1}`;
-            th.classList.add('upload-header');
-            trHead.appendChild(th);
-        });
+    /* Gráficos e gráficos de dados */
+    .chart {
+      margin: 20px 0;
+      width: 100%;
+      height: 300px;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+    }
 
-        thead.appendChild(trHead);
-        table.appendChild(thead);
+    /* Box de Dados Importantes */
+    .box {
+      border: 1px solid #333;
+      background-color: #fff;
+      padding: 15px;
+      margin: 10px 0;
+    }
 
-        const tbody = document.createElement('tbody');
+    .alert {
+      color: red;
+    }
 
-        // Rows for tanDeltaMeans values
-        for (let rowIndex = 0; rowIndex < maxLength; rowIndex++) {
-            const tr = document.createElement('tr');
+    .normal {
+      color: green;
+    }
 
-            // Index column
-            const tdIndex = document.createElement('td');
-            tdIndex.textContent = rowIndex + 1;
-            tr.appendChild(tdIndex);
+    .critico {
+      color: orange;
+    }
 
-            // Mean value columns per upload
-            groupData.forEach((tanDeltaMeans, uploadIndex) => {
-                const td = document.createElement('td');
-                td.textContent = (rowIndex < tanDeltaMeans.length) ? tanDeltaMeans[rowIndex].toFixed(5) : '';
-                tr.appendChild(td);
-            });
+    /* Layout do Diagnóstico */
+    .diagnostico {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
 
-            tbody.appendChild(tr);
-        }
+    .diagnostico div {
+      flex: 1;
+      margin: 0 10px;
+    }
 
-        // Last row for tanDeltaSTD values
-        const trSTD = document.createElement('tr');
+    /* Rodapé */
+    footer {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
 
-        // Label cell
-        const tdLabel = document.createElement('td');
-        tdLabel.textContent = 'TanDeltaSTD';
-        tdLabel.style.fontWeight = 'bold';
-        trSTD.appendChild(tdLabel);
+<body>
 
-        // STD values cells per upload
-        const stdsForGroup = tanDeltaSTDByGroup[groupIndex] || [];
-        groupData.forEach((_, uploadIndex) => {
-            const tdStd = document.createElement('td');
-            tdStd.textContent = (uploadIndex < stdsForGroup.length) ? stdsForGroup[uploadIndex].toFixed(5) : '';
-            tdStd.style.fontWeight = 'bold';
-            trSTD.appendChild(tdStd);
-        });
+  <h1>Circuito</h1>
 
-        tbody.appendChild(trSTD);
+  <table>
+    <tr>
+      <th>Dados do Cabo</th>
+      <th>Informações</th>
+    </tr>
+    <tr class="titulo">
+      <td>Localização: SALA ELÉTRICA S/E UTILIDADES</td>
+      <td>Data Diagnóstico: 07/04/2025</td>
+    </tr>
+    <tr>
+      <td>Condição: <span class="normal">Normal</span></td>
+      <td>Item Recirculação: CAE 00438</td>
+    </tr>
+  </table>
 
-        table.appendChild(tbody);
-        container.appendChild(table);
-    });
+  <div class="chart"></div>
 
-    tanDeltaDataDisplay.appendChild(container);
-}
+  <div class="diagnostico">
+    <div class="box alert">Alerta: Medições fora do padrão</div>
+    <div class="box critico">Crítico: Reavaliação necessária</div>
+  </div>
 
-// For testing show the table on load with example data
-tabelaDados();
-
-</script>
+  <footer>
+    <p>Texto do rodapé e informações adicionais</p>
+  </footer>
 
 </body>
-</html>
 
+</html>
