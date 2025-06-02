@@ -371,6 +371,7 @@ function criarTabela(resultado) {
             <th text-align = "center">Condição</th>
         </tr>
     `;
+    thead.style.border="#000 1px solid";
     tabela.appendChild(thead);
     // Cria o corpo da tabela
     const tbody = document.createElement('tbody');
@@ -379,16 +380,16 @@ function criarTabela(resultado) {
             <td style="border: #000 1px solid; border-right: #000 3px solid"><strong>Unid. Ope.: </strong>${resultado.descricao}</td>
             <td style="border: #000 1px solid" colspan="2"  style="border: #000 1px solid"><strong>Item Localização: </strong>${resultado.codigo}</td>
             <td style="border: #000 1px solid" colspan="4"><strong>Data Diag.: </strong></td>
-            <td rowspan="4" style="border: #000 1px solid">
-                <div style="padding: 10px; margin= 0px; background-color: #00FF00; align-items: "center"" >
+            <td rowspan="4" style="border: #000 1px solid, margin: 0px">
+                <div style="padding: 10px; background-color: #00FF00; align-items: "center"" >
                     <input type="checkbox" id="TD" />
                     <label>NORMAL</label>
                 </div>
-                <div style="padding: 10px; margin= 0px; background-color: #FFCC00; align-items: "center"">
+                <div style="padding: 10px; background-color: #FFCC00; align-items: "center"">
                     <input type="checkbox" id="DP" />
                     <label>ALERTA</label>
                 </div>
-                <div style="padding: 10px; margin= 0px; background-color: #FF0000; align-items: "center"">
+                <div style="padding: 10px; background-color: #FF0000; align-items: "center"">
                     <input type="checkbox" id="VLF"/>
                     <label>CRÍTICO</label>
                 </div>
