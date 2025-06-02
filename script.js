@@ -288,6 +288,7 @@ function buscarCodigo(codigoBuscado) {
                         matIsol: partes[20] ? partes[20].trim() : '',
                         iso: partes[23] ? partes[23].trim() : '',
                         metro: partes[24] ? partes[24].trim() : '',
+                        fases: partes[25] ? partes[25].trim() : '',
                     };
                     break; // Para a busca se o código for encontrado
                 }
@@ -358,12 +359,16 @@ function criarTabela(resultado) {
 
     // Cria um elemento de tabela
     const tabela = document.createElement('table');
-
+    tabela.style.borderCollapse = 'collapse';
+    tabela.style.border = '#000 3px solid';
     // Cria o cabeçalho da tabela
     const thead = document.createElement('thead');
     thead.innerHTML = `
         <tr>
-            <th colspan="6" text-align = "center">Dados do Cabo</th>
+            <th text-align = "center">Circuito</th>
+            <th text-align = "center" colspan='2'>Dados do Cabo</th>
+            <th text-align = "center" colspan='4'>Informações</th>
+            <th text-align = "center">Condição</th>
         </tr>
     `;
     tabela.appendChild(thead);
@@ -371,28 +376,42 @@ function criarTabela(resultado) {
     const tbody = document.createElement('tbody');
     tbody.innerHTML = `
         <tr>
-            <td><strong>Unid. Ope.: </strong>${resultado.descricao}</td>
-            <td colspan="2"><strong>Item Localização: </strong>${resultado.codigo}</td>
-            <td><strong>Data Diag.: </strong></td>
+            <td style="border: #000 1px solid; border-right: #000 3px solid"><strong>Unid. Ope.: </strong>${resultado.descricao}</td>
+            <td style="border: #000 1px solid" colspan="2"  style="border: #000 1px solid"><strong>Item Localização: </strong>${resultado.codigo}</td>
+            <td style="border: #000 1px solid" colspan="4"><strong>Data Diag.: </strong></td>
+            <td rowspan="4" style="border: #000 1px solid">
+                <div style="padding: 10px; margin= 0px; background-color: #00FF00; align-items: "center"" >
+                    <input type="checkbox" id="TD" />
+                    <label>NORMAL</label>
+                </div>
+                <div style="padding: 10px; margin= 0px; background-color: #FFCC00; align-items: "center"">
+                    <input type="checkbox" id="DP" />
+                    <label>ALERTA</label>
+                </div>
+                <div style="padding: 10px; margin= 0px; background-color: #FF0000; align-items: "center"">
+                    <input type="checkbox" id="VLF"/>
+                    <label>CRÍTICO</label>
+                </div>
+            </td>
         </tr>
         <tr>
-            <td><strong>Localização: </strong>${resultado.sala}</td>
-            <td colspan="2"><strong>Item Recirculação: </strong> ${resultado.CAE} (${resultado.equipamento})</td>                
-            <td><strong>Prox. Diag.: </strong></td>
+            <td style="border: #000 1px solid; border-right: #000 3px solid"><strong>Localização: </strong>${resultado.sala}</td>
+            <td style="border: #000 1px solid" colspan="2"><strong>Item Recirculação: </strong> ${resultado.CAE} (${resultado.equipamento})</td>                
+            <td style="border: #000 1px solid" colspan="4"><strong>Prox. Diag.: </strong></td>
+        </tr>
+            <tr style="border: #000 1px solid">
+            <td style="border: #000 1px solid; border-right: #000 3px solid"><strong>Origem: </strong>${origem}</td>
+            <td style="border: #000 1px solid"><strong>Comp.(m): </strong>${resultado.metro}</td>
+            <td style="border: #000 1px solid"><strong>Mat. Isol.: </strong>${isol}</td>
+            <td style="border: #000 1px solid" colspan="2" rowspan="2" valign="middle"><strong>Téc. Exec.:   </strong></td>
+            <td style="border: #000 1px solid" colspan="2" rowspan="2" valign="middle">${tec1}</br>${tec2}</td>
         </tr>
         <tr>
-            <td><strong>Origem: </strong>${origem}</td>
-            <td><strong>Comp.(m): </strong>${resultado.metro}</td>
-            <td><strong>Mat. Isol.: </strong>${isol}</td>
-            <td colspan="2" valign="middle"><strong>Téc. Exec.:   </strong></td>
-            <td colspan="2" valign="middle">${tec1}</br>${tec2}</td>
-            </tr>
-            <tr>
-            <td><strong>Destino: </strong>${destino}</td>
-            <td><strong>C. Isol.: </strong>${resultado.iso}</td>
-            <td><strong>Cabos/fase: </strong></td>    
+            <td style="border: #000 1px solid; border-right: #000 3px solid"><strong>Destino: </strong>${destino}</td>
+            <td style="border: #000 1px solid"><strong>C. Isol.: </strong>${resultado.iso}</td>
+            <td style="border: #000 1px solid"><strong>Cabos/fase: </strong>${resultado.fases}</td>    
         </tr>
-        <th colspan="6">Resultado dos Testes</th>
+        <th colspan="8">Resultado dos Testes</th>
     `;
 
     tabela.appendChild(tbody);
@@ -571,7 +590,7 @@ const vlf = document.getElementById("VLF");
 vlf.addEventListener("change", function () {
     if (vlf.checked) {
         document.getElementById('VLFTest').style.display = 'block';
-        
+
     } else { document.getElementById('VLFTest').style.display = 'none'; }
 })
 
