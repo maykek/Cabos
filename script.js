@@ -25,8 +25,8 @@ const dia = date.getDate();
 const mes = date.getMonth() + 1; // Adiciona 1, pois os meses começam em 0
 const ano = date.getFullYear();
 const Data = `${dia}-${mes}-${ano}`;
-const meses = null;
 
+let meses = null;
 let tipUpByGroup = [];
 let tipUpTipUpByGroup = [];
 let tagCad = null;
@@ -46,6 +46,8 @@ let origem = null;
 let destino = null;
 let isol = '';
 let isol1 = null;
+let novaData = 0;
+
 
 const td = document.getElementById("TD");
 td.addEventListener("change", function () {
@@ -371,17 +373,18 @@ function criticidade(codigoBuscado) {
             // Itera sobre cada linha para encontrar o código
             for (let linha of linhas) {
                 const partes = linha.split(';'); // Divide a linha em partes
-                const codigo = partes[1] ? partes[1].trim() : ''; // Verifica se partes[4] existe
+                const codigo = partes[6] ? partes[6].trim() : ''; // Verifica se partes[4] existe
 
-                if (codigo.toLowerCase() === codigoBuscado.trim().toLowerCase()) {
+                  if (codigo.toLowerCase() === codigoBuscado.trim().toLowerCase()) {
                     result = {
-                        critico: partes[3] ? partes[3].trim() : '',
+                        a: partes[5] ? partes[5].trim() : '', // Código
                     };
                     break; // Para a busca se o código for encontrado
                 }
+                //console.log(codigo)
             }
             if (result) {
-                let letra = result.critico;
+                let letra = result.a;
                 if (letra == '') { meses = 36; }
                 if (letra == 'A' || 'AA') { meses = 18; }
                 if (letra == 'B' || 'C') { meses = 24; }
@@ -391,6 +394,7 @@ function criticidade(codigoBuscado) {
             console.error('Erro:', error);
         })
 
+    
 }
 
 
@@ -398,15 +402,14 @@ function criticidade(codigoBuscado) {
 function criarTabela(resultado) {
     tec1 = document.getElementById('tecnicos1').value;
     tec2 = document.getElementById('tecnicos2').value;
-    let dataTeste = document.getElementById('dataTeste').value;
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    let dataTeste = document.getElementById('dataTeste').value;
     let parts = dataTeste.split('-');
     let d = new Date(parts[0], parts[1] - 1 + meses, parts[2]);
     let novaData = d.toISOString().slice(0, 10).split('-').reverse().join('/');
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     // Limpa a tabela anterior, se houver
     const container = document.getElementById('tabela-container');
     container.innerHTML = ''; // Limpa o conteúdo anterior
