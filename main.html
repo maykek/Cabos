@@ -67,7 +67,11 @@
             margin-bottom: 5px;
             width: 200px;
         }
-
+        input[type="date"] {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            width: 200px;
+        }
         table {
             width: 100%;
             border-collapse: inherit;
@@ -120,7 +124,7 @@
 <body>
     <h1>Relatório de Teste de Cabos</h1>
     <div id="preencher">
-        <div style="border: #000 1px solid; height: 300px; padding: 15px;">
+        <div style="border: #000 1px solid; height: 350px; padding: 15px;">
             <fieldset>
                 <legend>Insira o número do Item Funcional</legend>
                 <div id="buscar">
@@ -150,6 +154,12 @@
                         <option value="Victor Costa">Victor Costa</option>
                         <option value="Vitor Camargo">Vitor Camargo</option>
                     </select>
+                </fieldset>
+            </div>
+            <div>
+                <fieldset>
+                    <legend>Data do Teste</legend>
+                    <input type="date" name="dataTest" id="dataTeste">
                 </fieldset>
             </div>
             <div style="padding-top: 10px;">

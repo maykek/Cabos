@@ -25,6 +25,7 @@ const dia = date.getDate();
 const mes = date.getMonth() + 1; // Adiciona 1, pois os meses começam em 0
 const ano = date.getFullYear();
 const Data = `${dia}-${mes}-${ano}`;
+const meses = null;
 
 let tipUpByGroup = [];
 let tipUpTipUpByGroup = [];
@@ -40,6 +41,7 @@ let group = 0;
 let fase = '';
 let irTag = '';
 let resultado = null;
+let result = null;
 let origem = null;
 let destino = null;
 let isol = '';
@@ -309,8 +311,6 @@ function buscarCodigo(codigoBuscado) {
                 // Chama a função para criar a tabela com o resultado
 
             } else {
-                //console.log("Código não encontrado.");
-                //window.alert('Código não encontrado.')
                 if (window.confirm("Código não encontrado. Deseja Cadastrar?")) {
                     window.open("relatório.html");
                 }
@@ -344,15 +344,69 @@ function cabo() {
 // Adiciona um evento de clique ao botão
 document.getElementById('buscarButton').addEventListener('click', function () {
     resultado = null;
+    result = null;
     const codigoBuscado = document.getElementById('codigoInput').value; // Lê o valor do input
     buscarCodigo(codigoBuscado); // Chama a função de busca com o valor do input
+    criticidade(codigoBuscado);
 });
+
+// Função Criticidade do cabo
+function criticidade(codigoBuscado) {
+    // Verifica se codigoBuscado é uma string
+    if (typeof codigoBuscado !== 'string') {
+        console.error('O valor buscado não é uma string. criticidade(codigoBuscado)');
+        return;
+    }
+
+    fetch("Criticidade dos equipamentos.txt")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao carregar o arquivo');
+            }
+            return response.text();
+        })
+        .then(data => {
+            const linhas = data.split('\n'); // Divide o conteúdo em linhas
+
+            // Itera sobre cada linha para encontrar o código
+            for (let linha of linhas) {
+                const partes = linha.split(';'); // Divide a linha em partes
+                const codigo = partes[1] ? partes[1].trim() : ''; // Verifica se partes[4] existe
+
+                if (codigo.toLowerCase() === codigoBuscado.trim().toLowerCase()) {
+                    result = {
+                        critico: partes[3] ? partes[3].trim() : '',
+                    };
+                    break; // Para a busca se o código for encontrado
+                }
+            }
+            if (result) {
+                let letra = result.critico;
+                if (letra == '') { meses = 36; }
+                if (letra == 'A' || 'AA') { meses = 18; }
+                if (letra == 'B' || 'C') { meses = 24; }
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        })
+
+}
 
 
 // Função para criar a tabela
 function criarTabela(resultado) {
-    tec1 = document.getElementById('tecnicos1').value
-    tec2 = document.getElementById('tecnicos2').value
+    tec1 = document.getElementById('tecnicos1').value;
+    tec2 = document.getElementById('tecnicos2').value;
+    let dataTeste = document.getElementById('dataTeste').value;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    let parts = dataTeste.split('-');
+    let d = new Date(parts[0], parts[1] - 1 + meses, parts[2]);
+    let novaData = d.toISOString().slice(0, 10).split('-').reverse().join('/');
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Limpa a tabela anterior, se houver
     const container = document.getElementById('tabela-container');
     container.innerHTML = ''; // Limpa o conteúdo anterior
@@ -371,7 +425,7 @@ function criarTabela(resultado) {
             <th text-align = "center">Condição</th>
         </tr>
     `;
-    thead.style.border="#000 1px solid";
+    thead.style.border = "#000 1px solid";
     tabela.appendChild(thead);
     // Cria o corpo da tabela
     const tbody = document.createElement('tbody');
@@ -379,7 +433,7 @@ function criarTabela(resultado) {
         <tr>
             <td style="border: #000 1px solid; border-right: #000 3px solid"><strong>Unid. Ope.: </strong>${resultado.descricao}</td>
             <td style="border: #000 1px solid" colspan="2"  style="border: #000 1px solid"><strong>Item Localização: </strong>${resultado.codigo}</td>
-            <td style="border: #000 1px solid" colspan="4"><strong>Data Diag.: </strong></td>
+            <td style="border: #000 1px solid" colspan="4"><strong>Data Diag.: </strong>${dataTeste.split('-').reverse().join('/')} </td>
             <td rowspan="4" style="border: #000 1px solid, margin: 0px">
                 <div style="padding: 10px; background-color: #00FF00; align-items: "center"" >
                     <input type="checkbox" id="TD" />
@@ -398,7 +452,7 @@ function criarTabela(resultado) {
         <tr>
             <td style="border: #000 1px solid; border-right: #000 3px solid"><strong>Localização: </strong>${resultado.sala}</td>
             <td style="border: #000 1px solid" colspan="2"><strong>Item Recirculação: </strong> ${resultado.CAE} (${resultado.equipamento})</td>                
-            <td style="border: #000 1px solid" colspan="4"><strong>Prox. Diag.: </strong></td>
+            <td style="border: #000 1px solid" colspan="4"><strong>Prox. Diag.: </strong>${novaData}</td>
         </tr>
             <tr style="border: #000 1px solid">
             <td style="border: #000 1px solid; border-right: #000 3px solid"><strong>Origem: </strong>${origem}</td>
