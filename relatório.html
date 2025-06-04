@@ -1,133 +1,102 @@
-/* Estilos Gerais */
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Relatório de Diagnóstico</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f0f0f0;
-    }
-
-    h1,
-    h2,
-    h3 {
-      color: #333;
-    }
-
-    h1 {
-      text-align: center;
-    }
-
-    /* Tabela Principal */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-
-    th,
-    td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #4CAF50;
-      color: white;
-    }
-
-    /* Títulos dentro da Tabela */
-    .titulo {
-      background-color: #e7e7e7;
-    }
-
-    /* Gráficos e gráficos de dados */
-    .chart {
-      margin: 20px 0;
-      width: 100%;
-      height: 300px;
-      background-color: #ffffff;
-      border: 1px solid #ddd;
-    }
-
-    /* Box de Dados Importantes */
-    .box {
-      border: 1px solid #333;
-      background-color: #fff;
-      padding: 15px;
-      margin: 10px 0;
-    }
-
-    .alert {
-      color: red;
-    }
-
-    .normal {
-      color: green;
-    }
-
-    .critico {
-      color: orange;
-    }
-
-    /* Layout do Diagnóstico */
-    .diagnostico {
-      display: flex;
-      justify-content: space-between;
-      margin: 20px 0;
-    }
-
-    .diagnostico div {
-      flex: 1;
-      margin: 0 10px;
-    }
-
-    /* Rodapé */
-    footer {
-      text-align: center;
-      margin-top: 20px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Editor Simples de Arquivo TXT (Banco de Dados)</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #12c2e9, #c471ed, #f64f59);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  h1 {
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+  label.button {
+    background: #6a11cb;
+    background: linear-gradient(45deg, #2575fc, #6a11cb);
+    padding: 0.7rem 1.5rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgb(106 17 203 / 0.5);
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  label.button:hover {
+    filter: brightness(1.15);
+  }
+  input[type="file"] {
+    display: none;
+  }
+  textarea {
+    width: 100%;
+    max-width: 700px;
+    height: 300px;
+    border-radius: 8px;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    resize: vertical;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    margin-bottom: 1rem;
+    font-family: monospace;
+    background-color: rgba(255 255 255 / 0.1);
+    color: white;
+  }
+  button {
+    background: #845ec2;
+    padding: 0.7rem 1.5rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    transition: background-color 0.3s ease;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+  button:disabled {
+    background: gray;
+    cursor: not-allowed;
+  }
+  button:hover:enabled {
+    background: #633bb5;
+  }
+  .info {
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+</style>
 </head>
-
 <body>
+  <h1>Editor Simples de Arquivo TXT (Banco de Dados)</h1>
 
-  <h1>Circuito</h1>
+  <label class="button" for="inputArquivo">Abrir Arquivo TXT</label>
+  <input type="file" id="inputArquivo" accept=".txt,text/plain" />
 
-  <table>
-    <tr>
-      <th>Dados do Cabo</th>
-      <th>Informações</th>
-    </tr>
-    <tr class="titulo">
-      <td>Localização: SALA ELÉTRICA S/E UTILIDADES</td>
-      <td>Data Diagnóstico: 07/04/2025</td>
-    </tr>
-    <tr>
-      <td>Condição: <span class="normal">Normal</span></td>
-      <td>Item Recirculação: CAE 00438</td>
-    </tr>
-  </table>
+  <textarea id="editor" placeholder="Abra um arquivo TXT para editar" disabled></textarea>
 
-  <div class="chart"></div>
-
-  <div class="diagnostico">
-    <div class="box alert">Alerta: Medições fora do padrão</div>
-    <div class="box critico">Crítico: Reavaliação necessária</div>
+  <div>
+    <button id="btnSalvar" disabled>Salvar Alterações (Download)</button>
+    <button id="btnSalvarDirect" disabled>Salvar Alterações (Salvar no mesmo arquivo) [Chrome]</button>
   </div>
 
-  <footer>
-    <p>Texto do rodapé e informações adicionais</p>
-  </footer>
+  <p class="info" id="infoStatus">Nenhum arquivo aberto.</p>
 
+  <script src="cadastro.js">  </script>
 </body>
-
 </html>
+
