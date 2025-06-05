@@ -67,11 +67,13 @@
             margin-bottom: 5px;
             width: 200px;
         }
+
         input[type="date"] {
             margin-top: 5px;
             margin-bottom: 5px;
             width: 200px;
         }
+
         table {
             width: 100%;
             border-collapse: inherit;
@@ -175,7 +177,7 @@
                         <label>DP</label>
                     </div>
                     <div>
-                        <input type="checkbox" id="VLF"/>
+                        <input type="checkbox" id="VLF" />
                         <label>VLF</label>
                     </div>
                 </fieldset>
@@ -212,15 +214,6 @@
                 </select>
             </fieldset>
             <div id="uploadSection" style="display: flex; flex-direction: row; padding: 15px;"></div>
-            <fieldset>
-                <legend for="condicao">Selecione a condição:</legend>
-                <select id="condicao">
-                    <option value="0">Selecione</option>
-                    <option value="normal">Normal</option>
-                    <option value="alerta">Alerta</option>
-                    <option value="critico">Crítico</option>
-                </select>
-            </fieldset>
             <div>
                 <button id="buscarButton">Gerar Relatório</button>
             </div>
@@ -230,7 +223,7 @@
     <h1>Relatório</h1>
     <input type="text" id="tag" placeholder="tag">
     <button id="salvar-pdf">Salvar como PDF</button>
-    <div id="area-captura">
+    <div id="area-captura" style="display: none;">
         <div id="tabela-container" style="border: #f000 1px solid"></div>
         <div style="display: flex; flex-direction: row;">
             <div style="display: flex; flex-direction: column; width: 800px; height: 800; border: #000 1px solid; align-content: center;"
