@@ -99,6 +99,7 @@ td.addEventListener("change", function () {
                 canvas.id = `tanDeltaChart-${i}`; // ID único para cada gráfico
                 chartsContainer.appendChild(canvas);
             }
+            buscarCodigo(codigoBuscado);
         });
     } else {
         document.getElementById('upload').style.display = 'none';
@@ -345,7 +346,11 @@ function cabo() {
 }
 // Adiciona um evento de clique ao botão
 document.getElementById('buscarButton').addEventListener('click', function () {
-    document.getElementById("area-captura").style.display = "block";
+    resultado = null;
+    result = null;
+    const codigoBuscado = document.getElementById('codigoInput').value; // Lê o valor do input
+    buscarCodigo(codigoBuscado); // Chama a função de busca com o valor do input
+    criticidade(codigoBuscado);
 });
 
 // Função Criticidade do cabo
