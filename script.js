@@ -31,6 +31,7 @@ let tipUpByGroup = [];
 let tipUpTipUpByGroup = [];
 let tagCad = null;
 let tag = null;
+let tag1 = null;
 let tipoCabo = 0;
 let limMax = 0;
 let limMin = 0;
@@ -51,6 +52,11 @@ let novaData = 0;
 
 const td = document.getElementById("TD");
 td.addEventListener("change", function () {
+    resultado = null;
+    result = null;
+    const codigoBuscado = document.getElementById('codigoInput').value; // Lê o valor do input
+    buscarCodigo(codigoBuscado); // Chama a função de busca com o valor do input
+    criticidade(codigoBuscado);
     if (td.checked) {
         document.getElementById('upload').style.display = 'block';
         cableGroupsSelect.addEventListener('change', function () {
@@ -319,7 +325,7 @@ function buscarCodigo(codigoBuscado) {
                 }
             }
             if (resultado.Tag == '') {
-                const tag1 = document.getElementById('tag').value;
+                tag1 = document.getElementById('tag').value;
                 tag = `${resultado.CAE}-${tag1}-${Data}`;
                 tagCad = `${resultado.Tag}`;
             } else {
@@ -344,14 +350,6 @@ function cabo() {
     }
     criarTabela(resultado);
 }
-// Adiciona um evento de clique ao botão
-document.getElementById('buscarButton').addEventListener('click', function () {
-    resultado = null;
-    result = null;
-    const codigoBuscado = document.getElementById('codigoInput').value; // Lê o valor do input
-    buscarCodigo(codigoBuscado); // Chama a função de busca com o valor do input
-    criticidade(codigoBuscado);
-});
 
 // Função Criticidade do cabo
 function criticidade(codigoBuscado) {
@@ -490,10 +488,12 @@ function tabelaDados() {
 
     const container = document.createElement('div');
     container.style.marginTop = '1rem';
+    container.style.borderCollapse = 'collapse';
 
     tanDeltaMeansByGroup.forEach((groupData, groupIndex) => {
         const groupTitle = document.createElement('h3');
-        groupTitle.textContent = `Grupo ${groupIndex + 1}`;
+        groupTitle.textContent = `MEDIÇÕES TAN δ`;
+        groupTitle.style.textAlign = 'center';
         container.appendChild(groupTitle);
 
         if (groupData.length === 0) {
@@ -516,7 +516,9 @@ function tabelaDados() {
 
         // Primeira célula de cabeçalho vazia no canto superior esquerdo
         const thEmpty = document.createElement('th');
-        thEmpty.textContent = 'Índice';
+        thEmpty.textContent = 'FASES / TAG';
+        thEmpty.style.border = '#000 1px solid';
+        thEmpty.style.justifyContent = 'center';
         trHead.appendChild(thEmpty);
 
         // Cria cabeçalho para cada upload
@@ -534,6 +536,7 @@ function tabelaDados() {
                 cabo = 'T';
             }
             th.textContent = `${cabo}`;
+            th.style.border = '#000 1px solid';
             trHead.appendChild(th);
         });
         thead.appendChild(trHead);
@@ -562,6 +565,7 @@ function tabelaDados() {
             }
             tdIndex.style.backgroundColor = '#f2f2f2';
             tdIndex.style.fontWeight = 'bold';
+            tdIndex.style.border = '#000 1px solid';
             tr.appendChild(tdIndex);
 
             // Média de valores das colunas por upload
@@ -577,12 +581,11 @@ function tabelaDados() {
 
         // Última linha para os valores de tanDeltaSTD
         const trSTD = document.createElement('tr');
-
-        // Label cell
         const tdLabel = document.createElement('td');
         tdLabel.textContent = 'Desvio Padrão';
         tdLabel.style.fontWeight = 'bold';
         tdLabel.style.backgroundColor = '#f2f2f2';
+        tdLabel.style.border = '#000 1px solid';
         trSTD.appendChild(tdLabel);
 
         // Células de valores STD por upload
@@ -603,6 +606,7 @@ function tabelaDados() {
         tdTp.textContent = 'Tip Up [E-3]';
         tdTp.style.fontWeight = 'bold';
         tdTp.style.backgroundColor = '#f2f2f2';
+        tdTp.style.border = '#000 1px solid';
         trTipUp.appendChild(tdTp);
 
         // Células de valores STD por upload
@@ -620,9 +624,10 @@ function tabelaDados() {
 
         // Label cell
         const tdTpTp = document.createElement('td');
-        tdTpTp.textContent = 'Tip Up [E-3]';
+        tdTpTp.textContent = 'Tip Up Tip Up[E-3]';
         tdTpTp.style.fontWeight = 'bold';
         tdTpTp.style.backgroundColor = '#f2f2f2';
+        tdTpTp.style.border = '#000 1px solid';
         trTipUpTipUp.appendChild(tdTpTp);
 
         // Células de valores STD por upload
@@ -642,18 +647,58 @@ function tabelaDados() {
     tanDeltaDataDisplay.appendChild(container);
 }
 
-// Para teste, mostre a tabela ao carregar com dados de exemplo.
-//tabelaDados();
+
 ///////////////////////////////////////////////////////////////* TESTE VLF */////////////////////////////////////////////////////////////
 const vlf = document.getElementById("VLF");
 vlf.addEventListener("change", function () {
     if (vlf.checked) {
         document.getElementById('VLFTest').style.display = 'block';
+        VLF();
 
     } else { document.getElementById('VLFTest').style.display = 'none'; }
 })
 
+function VLF() {
+    const tanDeltaDataDisplay = document.getElementById('tanDeltaDataDisplay');
+    tanDeltaDataDisplay.innerHTML = '';
+    if (tanDeltaMeansByGroup.length === 0) {
+        tanDeltaDataDisplay.textContent = 'Nenhum dado de VLF carregado ainda.';
+        return;
+    }
 
+    const container = document.createElement('div');
+    container.style.marginTop = '1rem';
+    container.style.borderCollapse = 'collapse';
+    const tensao = document.getElementById("tensao").value;
+    const faseR = document.getElementById("faseR").value;
+    const faseS = document.getElementById("faseS").value;
+    const faseT = document.getElementById("faseT").value;
+
+    if (tensao && faseR && faseS && faseT) {
+        tanDeltaMeansByGroup.forEach((groupData, groupIndex) => {
+            const groupTitle = document.createElement('h3');
+            groupTitle.textContent = `MEDIÇÕES VLF`;
+            groupTitle.style.textAlign = 'center';
+            container.appendChild(groupTitle);
+
+            if (groupData.length === 0) {
+                const noData = document.createElement('p');
+                noData.textContent = 'Sem dados para este grupo.';
+                container.appendChild(noData);
+                return;
+            }
+
+            // Determina o comprimento máximo dos arrays tanDeltaMeans em uploads (linhas)
+            let maxLength = 0;
+            groupData.forEach(tanDeltaArray => {
+                if (tanDeltaArray.length > maxLength) maxLength = tanDeltaArray.length;
+            });
+
+
+        })
+    }
+
+}
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
 document.getElementById('salvar-pdf').addEventListener('click', function () {
     const tag1 = document.getElementById('tag').value;
@@ -662,7 +707,7 @@ document.getElementById('salvar-pdf').addEventListener('click', function () {
         html2canvas(element, { scale: 5 }).then(function (canvas) {
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF({
-                orientation: 'p', // Define a orientação como paisagem
+                orientation: 'l', // Define a orientação como paisagem
                 unit: 'cm', // Unidade de medida
                 format: 'a4' // Formato do papel
             });
