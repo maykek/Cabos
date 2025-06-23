@@ -2,7 +2,7 @@ const cableGroupsSelect = document.getElementById('cableGroups');
 const uploadSection = document.getElementById('uploadSection');
 const chartsContainer = document.getElementById('chartsContainer');
 const tipoCaboSelect = document.getElementById('tipoCabo');
-const tanDeltaDataDisplay = document.getElementById('tanDeltaDataDisplay');
+//const tanDeltaDataDisplay = document.getElementById('tanDeltaDataDisplay');
 const inputsPerGroup = 3; // Define quantos inputs de upload por grupo
 const maxEPRTD = 75;
 const minEPRTD = 16;
@@ -653,19 +653,12 @@ const vlf = document.getElementById("VLF");
 vlf.addEventListener("change", function () {
     if (vlf.checked) {
         document.getElementById('VLFTest').style.display = 'block';
-        VLF();
-
     } else { document.getElementById('VLFTest').style.display = 'none'; }
 })
 
 function VLF() {
-    const tanDeltaDataDisplay = document.getElementById('tanDeltaDataDisplay');
-    tanDeltaDataDisplay.innerHTML = '';
-    if (tanDeltaMeansByGroup.length === 0) {
-        tanDeltaDataDisplay.textContent = 'Nenhum dado de VLF carregado ainda.';
-        return;
-    }
-
+    const divVLF = document.getElementById('vlfTest');
+    divVLF.innerHTML = '';
     const container = document.createElement('div');
     container.style.marginTop = '1rem';
     container.style.borderCollapse = 'collapse';
@@ -674,31 +667,13 @@ function VLF() {
     const faseS = document.getElementById("faseS").value;
     const faseT = document.getElementById("faseT").value;
 
-    if (tensao && faseR && faseS && faseT) {
-        tanDeltaMeansByGroup.forEach((groupData, groupIndex) => {
-            const groupTitle = document.createElement('h3');
-            groupTitle.textContent = `MEDIÇÕES VLF`;
-            groupTitle.style.textAlign = 'center';
-            container.appendChild(groupTitle);
-
-            if (groupData.length === 0) {
-                const noData = document.createElement('p');
-                noData.textContent = 'Sem dados para este grupo.';
-                container.appendChild(noData);
-                return;
-            }
-
-            // Determina o comprimento máximo dos arrays tanDeltaMeans em uploads (linhas)
-            let maxLength = 0;
-            groupData.forEach(tanDeltaArray => {
-                if (tanDeltaArray.length > maxLength) maxLength = tanDeltaArray.length;
-            });
-
-
-        })
-    }
-
+    const groupTitle = document.createElement('h3');
+    groupTitle.textContent = `MEDIÇÕES VLF`;
+    groupTitle.style.textAlign = 'center';
+    container.appendChild(groupTitle);
+    divVLF.appendChild(container)
 }
+
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
 document.getElementById('salvar-pdf').addEventListener('click', function () {
     const tag1 = document.getElementById('tag').value;

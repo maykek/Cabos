@@ -189,16 +189,8 @@
                 </fieldset>
             </div>
         </div>
-        <div id="VLFTest">
-            <fieldset style="display: flex; flex-direction: column">
-                <legend>Insira Tensão e valores de VLF</legend>
-                <input type="text" name="KV" id="tensao" placeholder="Tensão aplicada">
-                <input type="text" name="R" id="faseR" placeholder="Corrente de fuga fase R">
-                <input type="text" name="S" id="faseS" placeholder="Corrente de fuga fase S">
-                <input type="text" name="T" id="faseT" placeholder="Corrente de fuga fase T">
-            </fieldset>
-        </div>
-        <div id="isolante" style="display: none;">
+
+        <div id="isolante" style="display: none; height: auto;">
             <label for="tipoCabo">Tipo de material isolante</label>
             <select id="tipoCabo">
                 <option value="0">Selecione</option>
@@ -221,6 +213,17 @@
             </fieldset>
             <div id="uploadSection" style="display: flex; flex-direction: row; padding: 15px;"></div>
         </div>
+        <div id="VLFTest">
+            <fieldset style="display: flex; flex-direction: column">
+                <legend>Insira Tensão e valores de VLF</legend>
+                <input type="text" name="KV" id="tensao" placeholder="Tensão aplicada">
+                <input type="text" name="R" id="faseR" placeholder="Corrente de fuga fase R">
+                <input type="text" name="S" id="faseS" placeholder="Corrente de fuga fase S">
+                <input type="text" name="T" id="faseT" placeholder="Corrente de fuga fase T">
+                <button id="atualizar" onclick="VLF()"
+                    style="margin-top: 5px; margin-bottom: 5px; width: 207px;">Atualizar</button>
+            </fieldset>
+        </div>
     </div>
     <div id="resultDisplay"></div>
     <h1>Relatório</h1>
@@ -230,7 +233,9 @@
         <div id="tabela-container" style="border: #f000 1px solid"></div>
         <div style="display: flex; flex-direction: row; border: #000 1px solid;">
             <div id="chartsContainer"></div>
-            <div id="tanDeltaDataDisplay" style="width: 100%; border: #f000 1px solid"></div>
+            <div id="tanDeltaDataDisplay" style="width: 100%; border: #f000 1px solid">
+                <div id="vlfTest" style="width: 100%; border: #f000 1px solid"></div>
+            </div>
         </div>
     </div>
 
