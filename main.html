@@ -51,11 +51,10 @@
         #chartsContainer {
             background-color: #f2f2f2;
             border-right: #000 1px solid;
-            display: flex;
-            flex-direction: column;
+            display:flex none;
             justify-content: center;
             align-items: center;
-            width: 100%;
+            width: 75%;
             height: 800;
         }
 
@@ -109,10 +108,11 @@
         #area-captura {
             width: 1300px;
             /* Largura desejada */
-            height: 300px;
+            height: 3000px;
             /* Altura desejada */
-            padding: 20px;
-
+            padding: 10px;
+            justify-content: center;
+            align-items: center;
         }
 
         #preencher {
@@ -231,9 +231,10 @@
     <button id="salvar-pdf">Salvar como PDF</button>
     <div id="area-captura">
         <div id="tabela-container" style="border: #f000 1px solid"></div>
-        <div style="display: flex; flex-direction: row; border: #000 1px solid;">
+        <div style="display: flex; flex-direction: row; border: #000 3px solid;">
             <div id="chartsContainer"></div>
-            <div id="tanDeltaDataDisplay" style="width: 100%; border: #f000 1px solid">
+            <div style="width: 75%;">
+                <div id="tanDeltaDataDisplay" style="width: 100%; border: #f000 1px solid"></div>
                 <div id="vlfTest" style="width: 100%; border: #f000 1px solid"></div>
             </div>
         </div>

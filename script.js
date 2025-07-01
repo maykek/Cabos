@@ -231,6 +231,9 @@ function updateChart(groupIndex, tanDeltaMeans) {
                 plugins: {
                     legend: {
                         position: 'right',
+                        labels: {
+                            color: 'black'
+                        }
                     }
                 }
             }
@@ -436,7 +439,7 @@ function criarTabela(resultado) {
             <td style="border: #000 1px solid; border-right: #000 3px solid"><strong>Unid. Ope.: </strong>${resultado.descricao}</td>
             <td style="border: #000 1px solid" colspan="2"  style="border: #000 1px solid"><strong>Item Localização: </strong>${resultado.codigo}</td>
             <td style="border: #000 1px solid" colspan="4"><strong>Data Diag.: </strong>${dataTeste.split('-').reverse().join('/')} </td>
-            <td rowspan="4" style="border: #000 1px solid, margin: 0px">
+            <td rowspan="4" style="border: #000 1px solid">
                 <div style="padding: 10px; background-color: #00FF00; align-items: "center"" >
                     <input type="checkbox" id="TD" />
                     <label>NORMAL</label>
@@ -456,7 +459,7 @@ function criarTabela(resultado) {
             <td style="border: #000 1px solid" colspan="2"><strong>Item Recirculação: </strong> ${resultado.CAE} (${resultado.equipamento})</td>                
             <td style="border: #000 1px solid" colspan="4"><strong>Prox. Diag.: </strong>${novaData}</td>
         </tr>
-            <tr style="border: #000 1px solid">
+            <tr>
             <td style="border: #000 1px solid; border-right: #000 3px solid"><strong>Origem: </strong>${origem}</td>
             <td style="border: #000 1px solid"><strong>Comp.(m): </strong>${resultado.metro}</td>
             <td style="border: #000 1px solid"><strong>Mat. Isol.: </strong>${isol}</td>
@@ -468,7 +471,7 @@ function criarTabela(resultado) {
             <td style="border: #000 1px solid"><strong>C. Isol.: </strong>${resultado.iso}</td>
             <td style="border: #000 1px solid"><strong>Cabos/fase: </strong>${document.getElementById("cableGroups").value}</td>    
         </tr>
-        <th colspan="8">Resultado dos Testes</th>
+        <th colspan="8" style="border: #000 1px solid">Resultado dos Testes</th>
     `;
 
     tabela.appendChild(tbody);
@@ -653,7 +656,12 @@ const vlf = document.getElementById("VLF");
 vlf.addEventListener("change", function () {
     if (vlf.checked) {
         document.getElementById('VLFTest').style.display = 'block';
+        chartsContainer.style.display = 'none'
     } else { document.getElementById('VLFTest').style.display = 'none'; }
+
+    if(vlf.checked && td.checked){
+        chartsContainer.style.display = 'block';
+    }
 })
 
 function VLF() {
@@ -679,14 +687,14 @@ document.getElementById('salvar-pdf').addEventListener('click', function () {
     const tag1 = document.getElementById('tag').value;
     if (tagCad || tag1) {
         var element = document.getElementById('area-captura');
-        html2canvas(element, { scale: 5 }).then(function (canvas) {
+        html2canvas(element, { scale: 2 }).then(function (canvas) {
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF({
                 orientation: 'l', // Define a orientação como paisagem
                 unit: 'cm', // Unidade de medida
                 format: 'a4' // Formato do papel
             });
-            pdf.addImage(imgData, 'JPEG', 0, 0, 21, 0);
+            pdf.addImage(imgData, 'JPEG', 0, 0, 29.5, 0); // (tipo de arquivo, formato do arquivo, margem esquerda, margem topo, margem direita, margem base)
             pdf.save(tag);
             console.log('Tag:', tag);
         });
