@@ -49,7 +49,6 @@ let isol = '';
 let isol1 = null;
 let novaData = 0;
 
-
 const td = document.getElementById("TD");
 td.addEventListener("change", function () {
     resultado = null;
@@ -493,12 +492,13 @@ function tabelaDados() {
     container.style.marginTop = '1rem';
     container.style.borderCollapse = 'collapse';
 
-    tanDeltaMeansByGroup.forEach((groupData, groupIndex) => {
-        const groupTitle = document.createElement('h3');
-        groupTitle.textContent = `MEDIÇÕES TAN δ`;
-        groupTitle.style.textAlign = 'center';
-        container.appendChild(groupTitle);
+    const groupTitle = document.createElement('p');
+    groupTitle.textContent = `MEDIÇÕES TAN δ`;
+    groupTitle.style.textAlign = 'center';
+    container.appendChild(groupTitle);
 
+
+    tanDeltaMeansByGroup.forEach((groupData, groupIndex) => {
         if (groupData.length === 0) {
             const noData = document.createElement('p');
             noData.textContent = 'Sem dados para este grupo.';
@@ -517,6 +517,9 @@ function tabelaDados() {
         const thead = document.createElement('thead');
         const trHead = document.createElement('tr');
 
+        table.style.marginTop = "20px";
+        table.style.height = "330px";
+
         // Primeira célula de cabeçalho vazia no canto superior esquerdo
         const thEmpty = document.createElement('th');
         thEmpty.textContent = 'FASES / TAG';
@@ -530,17 +533,40 @@ function tabelaDados() {
             let cabo = '';
             const th = document.createElement('th');
             if (fase == 1) {
-                cabo = 'R';
+                th.textContent = cabo || 'R';
+                console.log('cabo1:', cabo)
+                th.addEventListener('click', function () {
+                    const novaTag = window.prompt('Insira o Tag do cabo');
+                    if (novaTag != null) {
+                        cabo = novaTag;
+                        refresh()
+                        console.log('cabo2:', cabo)
+                    }
+                })
+                function refresh() {
+                    th.textContent = cabo;
+                }
             }
             if (fase == 2) {
                 cabo = 'S';
+                th.textContent = `${cabo}`;
+                th.addEventListener('click', function () {
+                    alert('Clicou!');
+                })
             }
             if (fase == 3) {
                 cabo = 'T';
+                th.textContent = `${cabo}`;
+                th.addEventListener('click', function () {
+                    alert('Clicou!');
+                })
             }
-            th.textContent = `${cabo}`;
+            
             th.style.border = '#000 1px solid';
             trHead.appendChild(th);
+
+
+
         });
         thead.appendChild(trHead);
         table.appendChild(thead);
@@ -648,8 +674,118 @@ function tabelaDados() {
     });
     console.log(tipUpByGroup);
     tanDeltaDataDisplay.appendChild(container);
-}
 
+    const aval = document.getElementById("aval")
+    aval.style.width = '300px';
+    if (isol == 'EPR') {
+        aval.innerHTML = `
+    <p>Os valores abaixo, para avaliação dos cabos, variam de acordo com o material isolante: </p>
+                    <table style="border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Critérios</th>
+                                <th>Alarme</th>
+                                <th>Crítico</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">MTD (1,0*U0) [E-3]</td>
+                                <td style="text-align: center; border: #000 1px dashed;">16</td>
+                                <td style="text-align: center; border: #000 1px dashed;">75</td>
+                            </tr>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">Desvio Padrão</td>
+                                <td style="text-align: center; border: #000 1px dashed;">0,1</td>
+                                <td style="text-align: center; border: #000 1px dashed;">0,8</td>
+                            </tr>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">Tip Up [E-3]</td>
+                                <td style="text-align: center; border: #000 1px dashed;">2</td>
+                                <td style="text-align: center; border: #000 1px dashed;">40</td>
+                            </tr>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">Tip Up Tip Up [E-3]</td>
+                                <td style="text-align: center; border: #000 1px dashed;">1</td>
+                                <td style="text-align: center; border: #000 1px dashed;">25</td>
+                            </tr>
+                        </tbody>
+                    </table>
+`
+    } if (isol == 'XLPE') {
+        aval.innerHTML = `
+<p>Os valores abaixo, para avaliação dos cabos, variam
+                        de acordo com o material isolante: </p>
+                    <table style="border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Critérios</th>
+                                <th>Alarme</th>
+                                <th>Crítico</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">MTD (1,0*U0) [E-3]</td>
+                                <td style="text-align: center; border: #000 1px dashed;">6</td>
+                                <td style="text-align: center; border: #000 1px dashed;">70</td>
+                            </tr>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">Desvio Padrão</td>
+                                <td style="text-align: center; border: #000 1px dashed;">0,1</td>
+                                <td style="text-align: center; border: #000 1px dashed;">1</td>
+                            </tr>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">Tip Up [E-3]</td>
+                                <td style="text-align: center; border: #000 1px dashed;">6,7</td>
+                                <td style="text-align: center; border: #000 1px dashed;">94</td>
+                            </tr>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">Tip Up Tip Up [E-3]</td>
+                                <td style="text-align: center; border: #000 1px dashed;">2</td>
+                                <td style="text-align: center; border: #000 1px dashed;">50</td>
+                            </tr>
+                        </tbody>
+                    </table>
+`
+    } else {
+        aval.innerHTML = `
+<p>Os valores abaixo, para avaliação dos cabos, variam
+                        de acordo com o material isolante: </p>
+                    <table style="border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Critérios</th>
+                                <th>Alarme</th>
+                                <th>Crítico</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">MTD (1,0*U0) [E-3]</td>
+                                <td style="text-align: center; border: #000 1px dashed;">-</td>
+                                <td style="text-align: center; border: #000 1px dashed;">-</td>
+                            </tr>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">Desvio Padrão</td>
+                                <td style="text-align: center; border: #000 1px dashed;">-</td>
+                                <td style="text-align: center; border: #000 1px dashed;">-</td>
+                            </tr>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">Tip Up [E-3]</td>
+                                <td style="text-align: center; border: #000 1px dashed;">-</td>
+                                <td style="text-align: center; border: #000 1px dashed;">-</td>
+                            </tr>
+                            <tr>
+                                <td style="border: #000 1px dashed;" colspan="2">Tip Up Tip Up [E-3]</td>
+                                <td style="text-align: center; border: #000 1px dashed;">-</td>
+                                <td style="text-align: center; border: #000 1px dashed;">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+`
+    }
+}
 
 ///////////////////////////////////////////////////////////////* TESTE VLF */////////////////////////////////////////////////////////////
 const vlf = document.getElementById("VLF");
@@ -659,7 +795,7 @@ vlf.addEventListener("change", function () {
         chartsContainer.style.display = 'none'
     } else { document.getElementById('VLFTest').style.display = 'none'; }
 
-    if(vlf.checked && td.checked){
+    if (vlf.checked && td.checked) {
         chartsContainer.style.display = 'block';
     }
 })
