@@ -1,4 +1,5 @@
 const cableGroupsSelect = document.getElementById('cableGroups');
+const cableGroups = document.getElementById('cableGroups').value;
 const uploadSection = document.getElementById('uploadSection');
 const chartsContainer = document.getElementById('chartsContainer');
 const tipoCaboSelect = document.getElementById('tipoCabo');
@@ -492,10 +493,10 @@ function tabelaDados() {
     container.style.marginTop = '1rem';
     container.style.borderCollapse = 'collapse';
 
-    const groupTitle = document.createElement('p');
-    groupTitle.textContent = `MEDIÇÕES TAN δ`;
-    groupTitle.style.textAlign = 'center';
-    container.appendChild(groupTitle);
+    // const groupTitle = document.createElement('p');
+    // groupTitle.textContent = `MEDIÇÕES TAN δ`;
+    // groupTitle.style.textAlign = 'center';
+    // container.appendChild(groupTitle);
 
 
     tanDeltaMeansByGroup.forEach((groupData, groupIndex) => {
@@ -518,14 +519,21 @@ function tabelaDados() {
         const trHead = document.createElement('tr');
 
         table.style.marginTop = "20px";
-        table.style.height = "330px";
+        table.style.height = "100%";
 
         // Primeira célula de cabeçalho vazia no canto superior esquerdo
         const thEmpty = document.createElement('th');
-        thEmpty.textContent = 'FASES / TAG';
-        thEmpty.style.border = '#000 1px solid';
-        thEmpty.style.justifyContent = 'center';
+        thEmpty.textContent = '';
+        thEmpty.style.borderTop = '#000 1px solid';
+        thEmpty.style.borderLeft = '#000 1px solid';
         trHead.appendChild(thEmpty);
+
+        const thFase = document.createElement('th');
+        thFase.textContent = 'FASES / TAG';
+        thFase.style.border = '#000 1px solid';
+        thFase.style.justifyContent = 'center';
+        trHead.appendChild(thFase);
+
 
         // Cria cabeçalho para cada upload
         groupData.forEach((_, uploadIndex) => {
@@ -571,11 +579,36 @@ function tabelaDados() {
         thead.appendChild(trHead);
         table.appendChild(thead);
 
-        thead.appendChild(trHead);
-        table.appendChild(thead);
-
         const tbody = document.createElement('tbody');
+        const trTitle = document.createElement('tr');
 
+        if(cableGroups < 1 ){
+            trTitle.innerHTML = `
+                <td rowspan='7' style = "writing-mode: vertical-rl; 
+                    transform: rotate(180deg); 
+                    text-align: center; 
+                    width: 30px; 
+                    border-left: #000 1px solid;
+                    border-bottom: #000 1px solid;
+                    background-color: #f2f2f2ff">
+                        <strong>MEDIÇÕES TAN δ</strong>
+                </td>
+            `
+            tbody.appendChild(trTitle);
+        } else {
+             trTitle.innerHTML = `
+                <td rowspan='7' style = "writing-mode: vertical-rl; 
+                    transform: rotate(180deg); 
+                    text-align: center; 
+                    width: 30px; 
+                    border-left: #000 1px solid;
+                    border-bottom: #000 1px solid;
+                    background-color: #f2f2f2ff">
+                        <strong>MEDIÇÕES TAN δ GRUPO ${groupIndex + 1}</strong>
+                </td>
+            `
+            tbody.appendChild(trTitle);
+        }
         // Linha para os valores de tanDeltaMeans
         for (let rowIndex = 0; rowIndex < maxLength; rowIndex++) {
             const tr = document.createElement('tr');
@@ -592,7 +625,7 @@ function tabelaDados() {
             if (tdIndexText == 3) {
                 tdIndex.textContent = 'MTD (1,5*U0) [E-3]';
             }
-            tdIndex.style.backgroundColor = '#f2f2f2';
+            tdIndex.style.backgroundColor = '#f2f2f2ff';
             tdIndex.style.fontWeight = 'bold';
             tdIndex.style.border = '#000 1px solid';
             tr.appendChild(tdIndex);

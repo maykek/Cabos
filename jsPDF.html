@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar PDF con jsPDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+</head>
+
+<body>
+    <div class="page" id="page1">
+        <h1>Página 1</h1>
+        <p>Conteúdo da primeira página.</p>
+    </div>
+
+    <div class="page" id="page2">
+        <h1>Página 2</h1>
+        <p>Conteúdo da segunda página.</p>
+    </div>
+
+    <button onclick="gerarPDF()">Salvar PDF</button>
+    <script>
+        async function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const paginas = document.querySelectorAll('.page');
+
+            for (let i = 0; i < paginas.length; i++) {
+                const canvas = await html2canvas(paginas[i], { scale: 2 });
+                const imgData = canvas.toDataURL('image/png');
+
+                const pdfWidth = doc.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                if (i > 0) doc.addPage();
+                doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            }
+
+            doc.save('documento.pdf');
+        }
+    </script>
+
+</body>
+
+</html>
