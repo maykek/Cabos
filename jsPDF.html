@@ -1,49 +1,134 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generar PDF con jsPDF</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+  <meta charset="UTF-8">
+  <title>Gerador de Relatório Elétrico</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <style>
+    body { font-family: Arial; max-width: 800px; margin: auto; padding: 20px; }
+    label { display: block; margin-top: 10px; }
+    input, textarea { width: 100%; padding: 6px; }
+    canvas { margin-top: 20px; }
+    button { margin-top: 20px; padding: 10px 20px; }
+  </style>
 </head>
-
 <body>
-    <div class="page" id="page1">
-        <h1>Página 1</h1>
-        <p>Conteúdo da primeira página.</p>
-    </div>
 
-    <div class="page" id="page2">
-        <h1>Página 2</h1>
-        <p>Conteúdo da segunda página.</p>
-    </div>
+  <h2>Gerador de Relatório de Testes Elétricos</h2>
 
-    <button onclick="gerarPDF()">Salvar PDF</button>
-    <script>
-        async function gerarPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+  <form id="formulario">
+    <label>Nome do circuito:</label>
+    <input type="text" id="nome">
 
-            const paginas = document.querySelectorAll('.page');
+    <label>Local de instalação:</label>
+    <input type="text" id="local">
 
-            for (let i = 0; i < paginas.length; i++) {
-                const canvas = await html2canvas(paginas[i], { scale: 2 });
-                const imgData = canvas.toDataURL('image/png');
+    <label>Comprimento do cabo (m):</label>
+    <input type="number" id="comprimento">
 
-                const pdfWidth = doc.internal.pageSize.getWidth();
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    <label>Tipo de cabo:</label>
+    <input type="text" id="tipoCabo">
 
-                if (i > 0) doc.addPage();
-                doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            }
+    <label>Data do teste:</label>
+    <input type="date" id="dataTeste">
 
-            doc.save('documento.pdf');
+    <label>Próximo teste:</label>
+    <input type="date" id="proximoTeste">
+
+    <label>Técnicos responsáveis:</label>
+    <textarea id="tecnicos"></textarea>
+
+    <label>Valores do teste (separados por vírgula):</label>
+    <input type="text" id="valores" placeholder="Ex: 2.1, 3.4, 4.0, 3.2">
+
+    <button type="button" onclick="gerarRelatorio()">Gerar Relatório em PDF</button>
+  </form>
+
+  <canvas id="grafico" width="800" height="400"></canvas>
+
+  <script>
+    let chart; // guarda o gráfico para atualizar se necessário
+
+    function gerarRelatorio() {
+      // Pegar dados do formulário
+      const nome = document.getElementById('nome').value;
+      const local = document.getElementById('local').value;
+      const comprimento = document.getElementById('comprimento').value;
+      const tipoCabo = document.getElementById('tipoCabo').value;
+      const dataTeste = document.getElementById('dataTeste').value;
+      const proximoTeste = document.getElementById('proximoTeste').value;
+      const tecnicos = document.getElementById('tecnicos').value;
+      const valoresStr = document.getElementById('valores').value;
+
+      const valores = valoresStr.split(',').map(v => parseFloat(v.trim()));
+      const labels = valores.map((_, i) => 'Ponto ' + (i + 1));
+
+      // Criar gráfico
+      const ctx = document.getElementById('grafico').getContext('2d');
+      if (chart) chart.destroy(); // se já existe, limpa antes
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Valores de Teste',
+            data: valores,
+            borderColor: 'blue',
+            fill: false
+          }]
+        },
+        options: {
+          responsive: false
         }
-    </script>
+      });
+
+      // Esperar o gráfico renderizar e gerar imagem
+      setTimeout(() => {
+        const imagem = document.getElementById('grafico').toDataURL('image/png');
+
+        const docDefinition = {
+          content: [
+            { text: 'Relatório de Testes Elétricos', style: 'titulo' },
+            {
+              columns: [
+                { text: `Circuito: ${nome}` },
+                { text: `Data do Teste: ${dataTeste}`, alignment: 'right' }
+              ]
+            },
+            {
+              columns: [
+                { text: `Local: ${local}` },
+                { text: `Próximo Teste: ${proximoTeste}`, alignment: 'right' }
+              ]
+            },
+            { text: `Comprimento do cabo: ${comprimento} m\nTipo do cabo: ${tipoCabo}`, margin: [0, 10, 0, 10] },
+            { text: `Técnicos Responsáveis:\n${tecnicos}`, margin: [0, 0, 0, 10] },
+            { text: 'Gráfico dos valores de teste:', style: 'subtitulo' },
+            { image: imagem, width: 500, margin: [0, 10, 0, 10] },
+            { text: 'Valores do teste:', style: 'subtitulo' },
+            {
+              table: {
+                headerRows: 1,
+                widths: ['auto', 'auto'],
+                body: [
+                  ['Ponto', 'Valor'],
+                  ...valores.map((v, i) => [`Ponto ${i + 1}`, v.toString()])
+                ]
+              }
+            }
+          ],
+          styles: {
+            titulo: { fontSize: 20, bold: true, margin: [0, 0, 0, 20] },
+            subtitulo: { fontSize: 14, bold: true, margin: [0, 10, 0, 5] }
+          }
+        };
+
+        pdfMake.createPdf(docDefinition).download(`relatorio_${nome}.pdf`);
+      }, 500); // pequeno atraso para garantir que o gráfico esteja pronto
+    }
+  </script>
 
 </body>
-
 </html>

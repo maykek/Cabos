@@ -3,7 +3,6 @@ const cableGroups = document.getElementById('cableGroups').value;
 const uploadSection = document.getElementById('uploadSection');
 const chartsContainer = document.getElementById('chartsContainer');
 const tipoCaboSelect = document.getElementById('tipoCabo');
-//const tanDeltaDataDisplay = document.getElementById('tanDeltaDataDisplay');
 const inputsPerGroup = 3; // Define quantos inputs de upload por grupo
 const maxEPRTD = 75;
 const minEPRTD = 16;
@@ -781,43 +780,44 @@ function tabelaDados() {
                         </tbody>
                     </table>
 `
-    } else {
-        aval.innerHTML = `
-<p>Os valores abaixo, para avaliação dos cabos, variam
-                        de acordo com o material isolante: </p>
-                    <table style="border-collapse: collapse;">
-                        <thead>
-                            <tr>
-                                <th colspan="2">Critérios</th>
-                                <th>Alarme</th>
-                                <th>Crítico</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="border: #000 1px dashed;" colspan="2">MTD (1,0*U0) [E-3]</td>
-                                <td style="text-align: center; border: #000 1px dashed;">-</td>
-                                <td style="text-align: center; border: #000 1px dashed;">-</td>
-                            </tr>
-                            <tr>
-                                <td style="border: #000 1px dashed;" colspan="2">Desvio Padrão</td>
-                                <td style="text-align: center; border: #000 1px dashed;">-</td>
-                                <td style="text-align: center; border: #000 1px dashed;">-</td>
-                            </tr>
-                            <tr>
-                                <td style="border: #000 1px dashed;" colspan="2">Tip Up [E-3]</td>
-                                <td style="text-align: center; border: #000 1px dashed;">-</td>
-                                <td style="text-align: center; border: #000 1px dashed;">-</td>
-                            </tr>
-                            <tr>
-                                <td style="border: #000 1px dashed;" colspan="2">Tip Up Tip Up [E-3]</td>
-                                <td style="text-align: center; border: #000 1px dashed;">-</td>
-                                <td style="text-align: center; border: #000 1px dashed;">-</td>
-                            </tr>
-                        </tbody>
-                    </table>
-`
-    }
+    } //else
+//          {
+//         aval.innerHTML = `
+// <p>Os valores abaixo, para avaliação dos cabos, variam
+//                         de acordo com o material isolante: </p>
+//                     <table style="border-collapse: collapse;">
+//                         <thead>
+//                             <tr>
+//                                 <th colspan="2">Critérios</th>
+//                                 <th>Alarme</th>
+//                                 <th>Crítico</th>
+//                             </tr>
+//                         </thead>
+//                         <tbody>
+//                             <tr>
+//                                 <td style="border: #000 1px dashed;" colspan="2">MTD (1,0*U0) [E-3]</td>
+//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+//                             </tr>
+//                             <tr>
+//                                 <td style="border: #000 1px dashed;" colspan="2">Desvio Padrão</td>
+//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+//                             </tr>
+//                             <tr>
+//                                 <td style="border: #000 1px dashed;" colspan="2">Tip Up [E-3]</td>
+//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+//                             </tr>
+//                             <tr>
+//                                 <td style="border: #000 1px dashed;" colspan="2">Tip Up Tip Up [E-3]</td>
+//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+//                             </tr>
+//                         </tbody>
+//                     </table>
+// `
+//     }
 }
 
 ///////////////////////////////////////////////////////////////* TESTE VLF */////////////////////////////////////////////////////////////
@@ -856,7 +856,7 @@ document.getElementById('salvar-pdf').addEventListener('click', function () {
     const tag1 = document.getElementById('tag').value;
     if (tagCad || tag1) {
         var element = document.getElementById('area-captura');
-        html2canvas(element, { scale: 2 }).then(function (canvas) {
+        html2canvas(element, { scale: 4 }).then(function (canvas) {
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF({
                 orientation: 'l', // Define a orientação como paisagem
@@ -870,8 +870,5 @@ document.getElementById('salvar-pdf').addEventListener('click', function () {
     }
     else {
         window.alert('Insira um Tag para salvar o relatório');
-        console.log('Tag:', tag);
-        console.log('tagCad: ', tagCad);
-        console.log('tag1: ', tag1);
     }
 });
