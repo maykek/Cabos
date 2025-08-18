@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gráfico de TanDeltaMean</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -218,7 +218,7 @@
     <div id="resultDisplay"></div>
     <h1>Relatório</h1>
     <input type="text" id="tag" placeholder="tag">
-    <button id="salvar-pdf">Salvar como PDF</button>
+    <button id="salvar-pdf" onclick="gerarPDF()">Salvar como PDF</button>
     <div id="area-captura">
         <div id="tabela-container" style="border: #f000 1px solid"></div>
         <div>

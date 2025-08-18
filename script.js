@@ -105,6 +105,7 @@ td.addEventListener("change", function () {
                 chartsContainer.appendChild(canvas);
             }
             buscarCodigo(codigoBuscado);
+            criticidade(codigoBuscado);
         });
     } else {
         document.getElementById('upload').style.display = 'none';
@@ -387,7 +388,7 @@ function criticidade(codigoBuscado) {
             if (result) {
                 let letra = result.a;
                 if (letra == 'A' || 'AA') { meses = 18; }
-                else if (letra == 'B' || 'C') { meses = 24; }
+                if (letra == 'B' || 'C') { meses = 24; }
                 else { meses = 36; }
             }
         })
@@ -525,6 +526,8 @@ function tabelaDados() {
         thEmpty.textContent = '';
         thEmpty.style.borderTop = '#000 1px solid';
         thEmpty.style.borderLeft = '#000 1px solid';
+        thEmpty.style.width = '20px';
+        thEmpty.style.height = 'auto';
         trHead.appendChild(thEmpty);
 
         const thFase = document.createElement('th');
@@ -555,20 +558,36 @@ function tabelaDados() {
                 }
             }
             if (fase == 2) {
-                cabo = 'S';
-                th.textContent = `${cabo}`;
+                th.textContent = cabo || 'S';
+                console.log('cabo1:', cabo)
                 th.addEventListener('click', function () {
-                    alert('Clicou!');
+                    const novaTag = window.prompt('Insira o Tag do cabo');
+                    if (novaTag != null) {
+                        cabo = novaTag;
+                        refresh()
+                        console.log('cabo2:', cabo)
+                    }
                 })
+                function refresh() {
+                    th.textContent = cabo;
+                }
             }
             if (fase == 3) {
-                cabo = 'T';
-                th.textContent = `${cabo}`;
+                th.textContent = cabo || 'T';
+                console.log('cabo1:', cabo)
                 th.addEventListener('click', function () {
-                    alert('Clicou!');
+                    const novaTag = window.prompt('Insira o Tag do cabo');
+                    if (novaTag != null) {
+                        cabo = novaTag;
+                        refresh()
+                        console.log('cabo2:', cabo)
+                    }
                 })
+                function refresh() {
+                    th.textContent = cabo;
+                }
             }
-            
+
             th.style.border = '#000 1px solid';
             trHead.appendChild(th);
 
@@ -581,7 +600,25 @@ function tabelaDados() {
         const tbody = document.createElement('tbody');
         const trTitle = document.createElement('tr');
 
-        if(cableGroups < 1 ){
+        if (cableGroups < 1) {
+            trTitle.innerHTML = `
+                <td rowspan='7' style = "
+                    width: 40px;
+                    height: 120px;
+                    vertical-align: rigth;
+                    padding: 0;
+                    background-color: #f2f2f2ff"
+                    >
+                        <div style = "      
+                        transform: rotate(-90deg);
+                        transform-origin: rigth bottom;
+                        white-space: nowrap;
+                        width: 0;">
+                        <strong>MEDIÇÕES TAN δ</strong></div>
+                </td>
+            `
+            tbody.appendChild(trTitle);
+        } else {
             trTitle.innerHTML = `
                 <td rowspan='7' style = "writing-mode: vertical-rl; 
                     transform: rotate(180deg); 
@@ -589,20 +626,8 @@ function tabelaDados() {
                     width: 30px; 
                     border-left: #000 1px solid;
                     border-bottom: #000 1px solid;
-                    background-color: #f2f2f2ff">
-                        <strong>MEDIÇÕES TAN δ</strong>
-                </td>
-            `
-            tbody.appendChild(trTitle);
-        } else {
-             trTitle.innerHTML = `
-                <td rowspan='7' style = "writing-mode: vertical-rl; 
-                    transform: rotate(180deg); 
-                    text-align: center; 
-                    width: 30px; 
-                    border-left: #000 1px solid;
-                    border-bottom: #000 1px solid;
-                    background-color: #f2f2f2ff">
+                    background-color: #f2f2f2ff"
+                    >
                         <strong>MEDIÇÕES TAN δ GRUPO ${groupIndex + 1}</strong>
                 </td>
             `
@@ -781,43 +806,43 @@ function tabelaDados() {
                     </table>
 `
     } //else
-//          {
-//         aval.innerHTML = `
-// <p>Os valores abaixo, para avaliação dos cabos, variam
-//                         de acordo com o material isolante: </p>
-//                     <table style="border-collapse: collapse;">
-//                         <thead>
-//                             <tr>
-//                                 <th colspan="2">Critérios</th>
-//                                 <th>Alarme</th>
-//                                 <th>Crítico</th>
-//                             </tr>
-//                         </thead>
-//                         <tbody>
-//                             <tr>
-//                                 <td style="border: #000 1px dashed;" colspan="2">MTD (1,0*U0) [E-3]</td>
-//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
-//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
-//                             </tr>
-//                             <tr>
-//                                 <td style="border: #000 1px dashed;" colspan="2">Desvio Padrão</td>
-//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
-//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
-//                             </tr>
-//                             <tr>
-//                                 <td style="border: #000 1px dashed;" colspan="2">Tip Up [E-3]</td>
-//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
-//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
-//                             </tr>
-//                             <tr>
-//                                 <td style="border: #000 1px dashed;" colspan="2">Tip Up Tip Up [E-3]</td>
-//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
-//                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
-//                             </tr>
-//                         </tbody>
-//                     </table>
-// `
-//     }
+    //          {
+    //         aval.innerHTML = `
+    // <p>Os valores abaixo, para avaliação dos cabos, variam
+    //                         de acordo com o material isolante: </p>
+    //                     <table style="border-collapse: collapse;">
+    //                         <thead>
+    //                             <tr>
+    //                                 <th colspan="2">Critérios</th>
+    //                                 <th>Alarme</th>
+    //                                 <th>Crítico</th>
+    //                             </tr>
+    //                         </thead>
+    //                         <tbody>
+    //                             <tr>
+    //                                 <td style="border: #000 1px dashed;" colspan="2">MTD (1,0*U0) [E-3]</td>
+    //                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+    //                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+    //                             </tr>
+    //                             <tr>
+    //                                 <td style="border: #000 1px dashed;" colspan="2">Desvio Padrão</td>
+    //                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+    //                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+    //                             </tr>
+    //                             <tr>
+    //                                 <td style="border: #000 1px dashed;" colspan="2">Tip Up [E-3]</td>
+    //                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+    //                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+    //                             </tr>
+    //                             <tr>
+    //                                 <td style="border: #000 1px dashed;" colspan="2">Tip Up Tip Up [E-3]</td>
+    //                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+    //                                 <td style="text-align: center; border: #000 1px dashed;">-</td>
+    //                             </tr>
+    //                         </tbody>
+    //                     </table>
+    // `
+    //     }
 }
 
 ///////////////////////////////////////////////////////////////* TESTE VLF */////////////////////////////////////////////////////////////
@@ -852,23 +877,45 @@ function VLF() {
 }
 
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
-document.getElementById('salvar-pdf').addEventListener('click', function () {
-    const tag1 = document.getElementById('tag').value;
-    if (tagCad || tag1) {
-        var element = document.getElementById('area-captura');
-        html2canvas(element, { scale: 4 }).then(function (canvas) {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF({
-                orientation: 'l', // Define a orientação como paisagem
-                unit: 'cm', // Unidade de medida
-                format: 'a4' // Formato do papel
-            });
-            pdf.addImage(imgData, 'JPEG', 0, 0, 29.5, 0); // (tipo de arquivo, formato do arquivo, margem esquerda, margem topo, margem direita, margem base)
-            pdf.save(tag);
-            console.log('Tag:', tag);
-        });
-    }
-    else {
-        window.alert('Insira um Tag para salvar o relatório');
-    }
-});
+
+async function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+
+    const div = document.getElementById("area-captura");
+
+    const canvas = await html2canvas(div, {
+        scale: 2, // aumenta a resolução (2x). Pode usar 3 ou 4 se quiser mais
+        useCORS: true
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("l", "mm", "a4");
+
+    // calcular dimensões da imagem proporcional ao PDF
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save(tag);
+}
+
+// document.getElementById('salvar-pdf').addEventListener('click', function () {
+//     const tag1 = document.getElementById('tag').value;
+//     if (tagCad || tag1) {
+//         var element = document.getElementById('area-captura');
+//         html2canvas(element, { scale: 4 }).then(function (canvas) {
+//             const imgData = canvas.toDataURL('image/png');
+//             const pdf = new jsPDF({
+//                 orientation: 'l', // Define a orientação como paisagem
+//                 unit: 'cm', // Unidade de medida
+//                 format: 'a4' // Formato do papel
+//             });
+//             pdf.addImage(imgData, 'PNG', 0, 0, 29.5, 0); // (tipo de arquivo, formato do arquivo, margem esquerda, margem topo, margem direita, margem base)
+//             pdf.save(tag);
+//             console.log('Tag:', tag);
+//         });
+//     }
+//     else {
+//         window.alert('Insira um Tag para salvar o relatório');
+//     }
+// });
