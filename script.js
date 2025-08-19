@@ -605,13 +605,16 @@ function tabelaDados() {
                 <td rowspan='7' style = "
                     width: 40px;
                     height: 120px;
-                    vertical-align: rigth;
+                    vertical-align: bottom;
+                    justify-items: center;
                     padding: 0;
-                    background-color: #f2f2f2ff"
+                    border-left: #000 1px solid;
+                    border-bottom: #000 1px solid;
+                    background-color: #f2f2f2ff";
                     >
                         <div style = "      
                         transform: rotate(-90deg);
-                        transform-origin: rigth bottom;
+                        transform-origin: center;
                         white-space: nowrap;
                         width: 0;">
                         <strong>MEDIÇÕES TAN δ</strong></div>
@@ -884,7 +887,7 @@ async function gerarPDF() {
     const div = document.getElementById("area-captura");
 
     const canvas = await html2canvas(div, {
-        scale: 2, // aumenta a resolução (2x). Pode usar 3 ou 4 se quiser mais
+        scale: 4, // aumenta a resolução (2x). Pode usar 3 ou 4 se quiser mais
         useCORS: true
     });
 
