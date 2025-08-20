@@ -879,6 +879,27 @@ function VLF() {
     divVLF.appendChild(container)
 }
 
+//////////////////////////////////////////////////////////////////Parecer Técnico/////////////////////////////////////////////////////////////
+function abrirModal() {
+    document.getElementById("modal").style.display = "flex";
+  }
+  function fecharModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+  function salvarComentario() {
+    const texto = document.getElementById("comentarioTexto").val
+    if (texto) {
+      const div = document.createElement("div");
+      div.style.border = "1px solid #ccc";
+      div.style.padding = "5px";
+      div.textContent = texto;
+      div.style.width = "100%";
+      div.style.height = "150px";
+      document.getElementById("comentarios").appendChild(div);
+    }
+    document.getElementById("comentarioTexto").value = "";
+    fecharModal();
+  }
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
 
 async function gerarPDF() {
