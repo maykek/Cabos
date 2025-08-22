@@ -887,14 +887,15 @@ function abrirModal() {
     document.getElementById("modal").style.display = "none";
   }
   function salvarComentario() {
-    const texto = document.getElementById("comentarioTexto").val
+    const texto = document.getElementById("comentarioTexto").value.trim()
     if (texto) {
       const div = document.createElement("div");
-      div.style.border = "1px solid #ccc";
+      div.style.border = "3px solid #000";
       div.style.padding = "5px";
       div.textContent = texto;
-      div.style.width = "100%";
+      div.style.width = "98.8%";
       div.style.height = "150px";
+      div.style.whiteSpace = "pre-wrap";
       document.getElementById("comentarios").appendChild(div);
     }
     document.getElementById("comentarioTexto").value = "";

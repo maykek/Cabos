@@ -244,7 +244,7 @@
     <div id="area-captura">
         <div id="tabela-container" style="border: #f000 1px solid"></div>
         <div>
-            <div style="display: flex; flex-direction: row; border: #000 3px solid;">
+            <div style="display: flex; flex-direction: row; border: #000 3px solid; border-collapse: collapse;">
                 <div id="chartsContainer"></div>
                 <div style="width: 100%;">
                     <div id="tanDeltaDataDisplay" style="width: 100%; height: 100%;"></div>
@@ -254,23 +254,26 @@
                     <div id="aval" style="padding: 5px 5px;"></div>
                 </div>
             </div>
-            <div id="comentarios"></div>
         </div>
+        <div id="comentarios"></div>
     </div>
-    <div id="modal">
-        <div id="modalContent">
-          <h4>Digite o parecer técnico</h4>
-          <textarea id="comentarioTexto" style="height: 150px; width: 950px; border: #000 1px solid;">
+
+     <!-- Modal -->
+  <div id="modal">
+    <div id="modalContent">
+      <h4>Digite seu comentário</h4>
+      <textarea id="comentarioTexto" style="width: 100%; height: 150px;">
 O circuito foi classificado como NORMAL, baseado nas medições realizadas e comentadas abaixo:
 * Tan δ -> Valores normais em todos os critérios de avaliação, conforme indicado na tabela e gráfico acima;
 * Resistência de Isolamento ->
 * Tensão VLF -> Corrente de fuga com valores estáveis e equilibrados.
 * Obs.: A data para o próximo diagnóstico é uma data referência, podendo ser alterada conforme disponibilidade de parada do equipamento.
-          </textarea><br><br>
-          <button onclick="salvarComentario()">Concluir</button>
-          <button onclick="fecharModal()">Cancelar</button>
-        </div>
-      </div>
+      </textarea><br><br>
+      <button onclick="salvarComentario()">Concluir</button>
+      <button onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+
     <script src="script.js"></script>
 </body>
 
