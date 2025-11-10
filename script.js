@@ -26,7 +26,7 @@ const mes = date.getMonth() + 1; // Adiciona 1, pois os meses começam em 0
 const ano = date.getFullYear();
 const Data = `${dia}-${mes}-${ano}`;
 
-let meses = null;
+let meses = 0;
 let tipUpByGroup = [];
 let tipUpTipUpByGroup = [];
 let tagCad = null;
@@ -385,12 +385,7 @@ function criticidade(codigoBuscado) {
                 }
                 //console.log(codigo)
             }
-            if (result) {
-                let letra = result.a;
-                if (letra == 'A' || 'AA') { meses = 18; }
-                if (letra == 'B' || 'C') { meses = 24; }
-                else { meses = 36; }
-            }
+
         })
         .catch(error => {
             console.error('Erro:', error);
@@ -408,7 +403,34 @@ function criarTabela(resultado) {
 
     let dataTeste = document.getElementById('dataTeste').value;
     let parts = dataTeste.split('-');
-    let d = new Date(parts[0], parts[1] - 1 + meses, parts[2]);
+    let d = new Date(parts[0], parts[1] - 1, parts[2]);  // Cria a data original (mês ajustado para 0-11)
+    // Adiciona os meses usando setMonth (lida com rollover automaticamente)
+    ;
+    if (result) {
+        switch (result.a) {
+            case 'A':
+                d.setMonth(d.getMonth() + 18)
+                break;
+            case 'AA':
+                d.setMonth(d.getMonth() + 18)
+                break;
+
+            case 'B':
+                d.setMonth(d.getMonth() + 24)
+                break;
+
+            case 'C':
+                d.setMonth(d.getMonth() + 24)
+                break;
+            case '':
+                d.setMonth(d.getMonth() + 36)
+                break;
+
+            default:
+                break;
+        }
+    }
+    // Formata para DD/MM/YYYY
     let novaData = d.toISOString().slice(0, 10).split('-').reverse().join('/');
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -882,25 +904,25 @@ function VLF() {
 //////////////////////////////////////////////////////////////////Parecer Técnico/////////////////////////////////////////////////////////////
 function abrirModal() {
     document.getElementById("modal").style.display = "flex";
-  }
-  function fecharModal() {
+}
+function fecharModal() {
     document.getElementById("modal").style.display = "none";
-  }
-  function salvarComentario() {
+}
+function salvarComentario() {
     const texto = document.getElementById("comentarioTexto").value.trim()
     if (texto) {
-      const div = document.createElement("div");
-      div.style.border = "3px solid #000";
-      div.style.padding = "5px";
-      div.textContent = texto;
-      div.style.width = "98.8%";
-      div.style.height = "150px";
-      div.style.whiteSpace = "pre-wrap";
-      document.getElementById("comentarios").appendChild(div);
+        const div = document.createElement("div");
+        div.style.border = "3px solid #000";
+        div.style.padding = "5px";
+        div.textContent = texto;
+        div.style.width = "98.8%";
+        div.style.height = "150px";
+        div.style.whiteSpace = "pre-wrap";
+        document.getElementById("comentarios").appendChild(div);
     }
     document.getElementById("comentarioTexto").value = "";
     fecharModal();
-  }
+}
 ///////////////////////////////////////////////////////////////////////Salvar em PDF//////////////////////////////////////////////////////////
 
 async function gerarPDF() {
@@ -909,7 +931,7 @@ async function gerarPDF() {
     const div = document.getElementById("area-captura");
 
     const canvas = await html2canvas(div, {
-        scale: 4, // aumenta a resolução (2x). Pode usar 3 ou 4 se quiser mais
+        scale: 4, // aumenta a resolução
         useCORS: true
     });
 
